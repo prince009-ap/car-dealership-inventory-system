@@ -11,7 +11,7 @@ jest.mock("bcryptjs", () => ({
 
 jest.mock("jsonwebtoken", () => ({
   sign: jest.fn()
-}), { virtual: true });
+}));
 
 const app = require("../../app");
 const User = require("../../models/User");

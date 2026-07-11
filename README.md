@@ -150,3 +150,72 @@ npm test
   "message": "User not found"
 }
 ```
+
+## Protected Route Authentication
+
+### Without Token
+
+```
+GET /api/protected
+```
+
+Response
+
+```json
+{
+  "success": false,
+  "message": "Access token is required"
+}
+```
+
+Status
+
+```
+401 Unauthorized
+```
+
+---
+
+### Invalid Token
+
+```
+Authorization: Bearer abc123
+```
+
+Response
+
+```json
+{
+  "success": false,
+  "message": "Invalid token"
+}
+```
+
+Status
+
+```
+401 Unauthorized
+```
+
+---
+
+### Valid Token
+
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+Response
+
+```json
+{
+  "success": true,
+  "message": "Protected route accessed successfully"
+}
+```
+
+Status
+
+```
+200 OK
+```
