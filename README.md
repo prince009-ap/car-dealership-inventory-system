@@ -19,6 +19,7 @@ npm test
 |---------|--------|
 | Health API | ✅ |
 | Register API | ✅ |
+| Login API | ✅ |
 
 
 ## API Examples
@@ -72,5 +73,80 @@ npm test
 {
   "success": false,
   "message": "Password must be at least 6 characters long"
+}
+```
+
+## Login User
+
+**Endpoint**
+
+`POST /api/auth/login`
+
+### Request
+
+```json
+{
+  "email": "senjaliyaprince009@gmail.com",
+  "password": "123456"
+}
+```
+
+### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Login successful",
+  "token": "your_jwt_token",
+  "user": {
+    "_id": "...",
+    "name": "Prince",
+    "email": "senjaliyaprince009@gmail.com",
+    "role": "USER"
+  }
+}
+```
+
+---
+
+### Invalid Password
+
+**Request**
+
+```json
+{
+  "email": "senjaliyaprince009@gmail.com",
+  "password": "111111"
+}
+```
+
+**Response (401 Unauthorized)**
+
+```json
+{
+  "success": false,
+  "message": "Invalid email or password"
+}
+```
+
+---
+
+### Email Not Found
+
+**Request**
+
+```json
+{
+  "email": "unknown@gmail.com",
+  "password": "123456"
+}
+```
+
+**Response (404 Not Found)**
+
+```json
+{
+  "success": false,
+  "message": "User not found"
 }
 ```
