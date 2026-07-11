@@ -6,3 +6,16 @@ A full-stack Car Dealership Inventory System built with the MERN stack, featurin
 
 - `backend/` - Node.js, Express, MongoDB (Mongoose)
 - `frontend/` - React, Vite, Tailwind CSS
+
+## 🧪 Testing
+
+```bash
+npm test
+```
+
+**Current Status**
+
+| Feature | Status |
+|---------|--------|
+| Health API | ✅ |
+| Register API | ✅ |
