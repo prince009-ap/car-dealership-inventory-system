@@ -21,6 +21,8 @@ npm test
 | Register API | ✅ |
 | Login API | ✅ |
 
+Registration and Login APIs were developed following the Red → Green → Refactor cycle. The final passing test report is included.
+
 
 ## API Examples
 
