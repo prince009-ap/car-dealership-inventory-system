@@ -46,6 +46,25 @@ const purchaseVehicle = async (req, res) => {
   }
 };
 
+const restockVehicle = async (req, res) => {
+  try {
+    const vehicle = await vehicleService.restockVehicle(req.params.id, req.body.quantity, req.user.role);
+
+    return res.status(200).json({
+      success: true,
+      message: "Vehicle restocked successfully",
+      quantity: vehicle.quantity,
+      vehicle
+    });
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || "Internal Server Error",
+      ...(error.quantity !== undefined ? { quantity: error.quantity } : {})
+    });
+  }
+};
+
 const updateVehicle = async (req, res) => {
   const vehicle = await vehicleService.updateVehicle(req.params.id, req.body);
 
@@ -84,6 +103,7 @@ module.exports = {
   deleteVehicle,
   getVehicles,
   purchaseVehicle,
+  restockVehicle,
   searchVehicles,
   updateVehicle
 };

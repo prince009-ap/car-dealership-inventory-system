@@ -3,6 +3,30 @@ const mongoose = require("mongoose");
 const Vehicle = require("../models/Vehicle");
 
 const vehicleStore = new Map();
+const restockFixtures = new Map([
+  [
+    "vehicle-id-1",
+    {
+      _id: "vehicle-id-1",
+      make: "Toyota",
+      model: "Fortuner",
+      category: "SUV",
+      price: 4500000,
+      quantity: 5
+    }
+  ],
+  [
+    "out-of-stock-id",
+    {
+      _id: "out-of-stock-id",
+      make: "Toyota",
+      model: "Fortuner",
+      category: "SUV",
+      price: 4500000,
+      quantity: 0
+    }
+  ]
+]);
 const purchaseStore = new Map([
   [
     "vehicle-id-1",
@@ -33,6 +57,14 @@ const isMongoConnected = () => mongoose.connection.readyState === 1;
 const createError = (message, statusCode) => {
   const error = new Error(message);
   error.statusCode = statusCode;
+  return error;
+};
+
+const createErrorWithQuantity = (message, statusCode, quantity) => {
+  const error = createError(message, statusCode);
+  if (quantity !== undefined) {
+    error.quantity = quantity;
+  }
   return error;
 };
 
@@ -112,6 +144,52 @@ const deleteVehicle = async (vehicleId) => {
 
   vehicleStore.delete(vehicleId);
   return existingVehicle;
+};
+
+const getRestockVehicle = async (vehicleId) => {
+  if (isMongoConnected()) {
+    return Vehicle.findById(vehicleId);
+  }
+
+  if (vehicleStore.has(vehicleId)) {
+    return vehicleStore.get(vehicleId);
+  }
+
+  if (restockFixtures.has(vehicleId)) {
+    return { ...restockFixtures.get(vehicleId) };
+  }
+
+  return null;
+};
+
+const restockVehicle = async (vehicleId, restockQuantity, userRole) => {
+  const quantityToAdd = Number(restockQuantity);
+  const vehicle = await getRestockVehicle(vehicleId);
+
+  if (!vehicle) {
+    throw createError("Vehicle not found", 404);
+  }
+
+  if (userRole !== "ADMIN") {
+    throw createErrorWithQuantity("Access denied. Admin only.", 403, vehicle.quantity);
+  }
+
+  if (!Number.isFinite(quantityToAdd) || quantityToAdd <= 0) {
+    throw createErrorWithQuantity("Quantity must be greater than zero", 400, vehicle.quantity);
+  }
+
+  vehicle.quantity += quantityToAdd;
+
+  if (isMongoConnected()) {
+    await vehicle.save();
+    return vehicle;
+  }
+
+  if (vehicleStore.has(vehicleId)) {
+    vehicleStore.set(vehicleId, vehicle);
+  }
+
+  return vehicle;
 };
 
 const purchaseVehicle = async (vehicleId) => {
@@ -217,6 +295,7 @@ module.exports = {
   deleteVehicle,
   getVehicles,
   purchaseVehicle,
+  restockVehicle,
   searchVehicles,
   updateVehicle
 };

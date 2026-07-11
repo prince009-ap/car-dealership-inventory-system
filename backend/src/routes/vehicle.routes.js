@@ -8,6 +8,7 @@ router.use(authMiddleware);
 
 router.post("/", vehicleController.createVehicle);
 router.post("/:id/purchase", vehicleController.purchaseVehicle);
+router.post("/:id/restock", vehicleController.restockVehicle);
 router.get("/search", vehicleController.searchVehicles);
 router.get("/", vehicleController.getVehicles);
 router.put("/:id", vehicleController.updateVehicle);
