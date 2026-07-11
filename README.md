@@ -1,8 +1,8 @@
-# AI_CAR
+# Car Dealership Inventory System
 
-Project scaffold for a MERN car dealership application.
+A full-stack Car Dealership Inventory System built with the MERN stack, featuring JWT authentication, role-based access control, vehicle inventory management, search and filtering, purchase/restock functionality, and Test-Driven Development (TDD).
 
-## Structure
+## Project Structure
 
-- `backend/` Node.js, Express, MongoDB, Mongoose
-- `frontend/` React, Vite, Tailwind CSS
+- `backend/` - Node.js, Express, MongoDB (Mongoose)
+- `frontend/` - React, Vite, Tailwind CSS
