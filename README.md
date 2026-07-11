@@ -20,6 +20,9 @@ npm test
 | Health API | ✅ |
 | Register API | ✅ |
 | Login API | ✅ |
+| JWT Middleware | ✅ Passed |
+| Vehicle CRUD | ✅ Passed |
+
 
 Registration and Login APIs were developed following the Red → Green → Refactor cycle. The final passing test report is included.
 
@@ -221,3 +224,20 @@ Status
 ```
 200 OK
 ```
+
+
+## TDD Example
+
+### 🔴 Red Phase
+
+Vehicle CRUD tests were written before implementation.
+
+Result:
+
+- 4 Vehicle CRUD tests failed as expected.
+
+### 🟢 Green Phase
+
+After implementing the APIs:
+
+- All Vehicle CRUD tests passed successfully.
