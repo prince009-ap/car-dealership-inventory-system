@@ -25,6 +25,27 @@ const searchVehicles = async (req, res) => {
   return res.status(200).json(vehicles);
 };
 
+const purchaseVehicle = async (req, res) => {
+  try {
+    const vehicle = await vehicleService.purchaseVehicle(req.params.id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Vehicle purchased successfully",
+      quantity: vehicle.quantity,
+      vehicle
+    });
+  } catch (error) {
+    return res.status(error.statusCode || 500).json({
+      success: false,
+      message: error.message || "Internal Server Error",
+      ...(error.statusCode === 400 && error.message === "Vehicle is out of stock"
+        ? { quantity: 0 }
+        : {})
+    });
+  }
+};
+
 const updateVehicle = async (req, res) => {
   const vehicle = await vehicleService.updateVehicle(req.params.id, req.body);
 
@@ -62,6 +83,7 @@ module.exports = {
   createVehicle,
   deleteVehicle,
   getVehicles,
+  purchaseVehicle,
   searchVehicles,
   updateVehicle
 };

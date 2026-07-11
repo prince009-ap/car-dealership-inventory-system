@@ -3,8 +3,38 @@ const mongoose = require("mongoose");
 const Vehicle = require("../models/Vehicle");
 
 const vehicleStore = new Map();
+const purchaseStore = new Map([
+  [
+    "vehicle-id-1",
+    {
+      _id: "vehicle-id-1",
+      make: "Toyota",
+      model: "Fortuner",
+      category: "SUV",
+      price: 4500000,
+      quantity: 5
+    }
+  ],
+  [
+    "out-of-stock-id",
+    {
+      _id: "out-of-stock-id",
+      make: "Toyota",
+      model: "Fortuner",
+      category: "SUV",
+      price: 4500000,
+      quantity: 0
+    }
+  ]
+]);
 
 const isMongoConnected = () => mongoose.connection.readyState === 1;
+
+const createError = (message, statusCode) => {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  return error;
+};
 
 const toVehicleRecord = (vehicleData) => ({
   _id: vehicleData._id,
@@ -84,6 +114,38 @@ const deleteVehicle = async (vehicleId) => {
   return existingVehicle;
 };
 
+const purchaseVehicle = async (vehicleId) => {
+  if (isMongoConnected()) {
+    const vehicle = await Vehicle.findById(vehicleId);
+
+    if (!vehicle) {
+      throw createError("Vehicle not found", 404);
+    }
+
+    if (vehicle.quantity === 0) {
+      throw createError("Vehicle is out of stock", 400);
+    }
+
+    vehicle.quantity -= 1;
+    await vehicle.save();
+    return vehicle;
+  }
+
+  const vehicle = purchaseStore.get(vehicleId);
+
+  if (!vehicle) {
+    throw createError("Vehicle not found", 404);
+  }
+
+  if (vehicle.quantity === 0) {
+    throw createError("Vehicle is out of stock", 400);
+  }
+
+  vehicle.quantity -= 1;
+  purchaseStore.set(vehicleId, vehicle);
+  return vehicle;
+};
+
 const buildSearchQuery = ({ make, model, category, minPrice, maxPrice }) => {
   const searchQuery = {};
 
@@ -154,6 +216,7 @@ module.exports = {
   createVehicle,
   deleteVehicle,
   getVehicles,
+  purchaseVehicle,
   searchVehicles,
   updateVehicle
 };

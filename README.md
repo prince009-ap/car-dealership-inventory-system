@@ -411,3 +411,40 @@ GET /api/vehicles/search?minPrice=1000000&maxPrice=5000000
   ]
 }
 ```
+
+
+## Purchase Vehicle
+
+**Endpoint**
+
+`POST /api/vehicles/:id/purchase`
+
+Requires JWT Authentication.
+
+### Success Response (200)
+
+```json
+{
+  "success": true,
+  "message": "Vehicle purchased successfully"
+}
+```
+
+### Out of Stock (400)
+
+```json
+{
+  "success": false,
+  "message": "Vehicle is out of stock"
+}
+```
+
+### Vehicle Not Found (404)
+
+```json
+{
+  "success": false,
+  "message": "Vehicle not found"
+}
+```
+
