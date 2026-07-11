@@ -241,3 +241,122 @@ Result:
 After implementing the APIs:
 
 - All Vehicle CRUD tests passed successfully.
+
+
+# Vehicle APIs
+
+> **Note:** All Vehicle APIs require a valid JWT token.
+
+Authorization Header
+
+```http
+Authorization: Bearer <JWT_TOKEN>
+```
+
+---
+
+## Create Vehicle
+
+**Endpoint**
+
+`POST /api/vehicles`
+
+### Request
+
+```json
+{
+  "make": "Toyota",
+  "model": "Fortuner",
+  "category": "SUV",
+  "price": 4500000,
+  "quantity": 5
+}
+```
+
+### Success Response (201 Created)
+
+```json
+{
+  "success": true,
+  "message": "Vehicle created successfully",
+  "vehicle": {
+    "_id": "...",
+    "make": "Toyota",
+    "model": "Fortuner",
+    "category": "SUV",
+    "price": 4500000,
+    "quantity": 5
+  }
+}
+```
+
+---
+
+## Get All Vehicles
+
+**Endpoint**
+
+`GET /api/vehicles`
+
+### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "vehicles": [
+    {
+      "_id": "...",
+      "make": "Toyota",
+      "model": "Fortuner",
+      "category": "SUV",
+      "price": 4500000,
+      "quantity": 5
+    }
+  ]
+}
+```
+
+---
+
+## Update Vehicle
+
+**Endpoint**
+
+`PUT /api/vehicles/:id`
+
+### Request
+
+```json
+{
+  "price": 4700000,
+  "quantity": 8
+}
+```
+
+### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Vehicle updated successfully"
+}
+```
+
+---
+
+## Delete Vehicle
+
+**Endpoint**
+
+`DELETE /api/vehicles/:id`
+
+### Success Response (200 OK)
+
+```json
+{
+  "success": true,
+  "message": "Vehicle deleted successfully"
+}
+```
+
+---
