@@ -95,8 +95,8 @@ const Register = () => {
       <div
         className={`mb-5 flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-300 ${
           error
-            ? "border-rose-400/60 bg-rose-500/10"
-            : "border-white/10 bg-white/5 focus-within:border-cyan-400/60"
+            ? "border-rose-500/50 bg-rose-950/20 focus-within:border-rose-500 focus-within:ring-4 focus-within:ring-rose-500/10"
+            : "border-white/10 bg-white/5 focus-within:border-cyan-400 focus-within:ring-4 focus-within:ring-cyan-400/15 focus-within:bg-slate-900/30"
         }`}
       >
         <Icon className="text-xl text-cyan-300" />
@@ -253,7 +253,7 @@ const Register = () => {
             <button
               type="submit"
               disabled={loading}
-              className="group relative flex w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 px-5 py-4 text-base font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/40 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:scale-100"
+              className="group relative flex w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-5 py-4 text-base font-semibold text-white shadow-lg shadow-indigo-950/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-cyan-500/30 hover:from-blue-500 hover:to-cyan-400 disabled:cursor-not-allowed disabled:from-slate-800 disabled:to-slate-800 disabled:text-slate-400 disabled:border-white/5 disabled:shadow-none disabled:opacity-50 disabled:hover:scale-100"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 via-white/10 to-transparent opacity-0 transition-all duration-300 group-hover:opacity-100" />
               <span className="relative">{loading ? "Registering..." : "Register"}</span>

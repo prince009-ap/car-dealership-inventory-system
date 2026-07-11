@@ -9,6 +9,103 @@ A full-stack Car Dealership Inventory System built with the MERN stack, featurin
 
 ## 🧪 Testing
 
+-all TDD test cases RED and GREEN both part in image that are in docs/documents
+
+## 📸 Screenshots
+
+### Login
+
+| Failed Test (RED) | Passing Implementation (GREEN) |
+|-------------------|-------------------------------|
+| ![Login Fail](docs/screenshot/login_frontend_fail.png) | ![Login Pass](docs/screenshot/login_frontend_pass.png) |
+
+---
+
+### Register
+
+| Failed Test (RED) | Passing Implementation (GREEN) |
+|-------------------|-------------------------------|
+| ![Register Fail](docs/screenshot/register_frontend_fail.png) | ![Register Pass](docs/screenshot/register_frontend_pass.png) |
+
+---
+
+### Vehicle CRUD
+
+| Failed Test (RED) | Passing Implementation (GREEN) |
+|-------------------|-------------------------------|
+| ![Vehicle Fail](docs/screenshot/vehicle_fail.png) | ![Vehicle Pass](docs/screenshot/vehicle_pass.png) |
+
+---
+
+### Vehicle Search
+
+| Failed Test (RED) | Passing Implementation (GREEN) |
+|-------------------|-------------------------------|
+| ![Search Fail](docs/screenshot/search_frontend_fail.png) | ![Search Pass](docs/screenshot/search_frontend_pass.png) |
+
+---
+
+### Vehicle Purchase
+
+| Failed Test (RED) | Passing Implementation (GREEN) |
+|-------------------|-------------------------------|
+| ![Purchase Fail](docs/screenshot/purchase_frontend_fail.png) | ![Purchase Pass](docs/screenshot/purchase_frontend_pass.png) |
+
+---
+
+### Vehicle Purchase API
+
+| Failed Test (RED) | Passing Implementation (GREEN) |
+|-------------------|-------------------------------|
+| ![Vehicle Purchase Fail](docs/screenshot/vehicle_purchase_fail.png) | ![Vehicle Purchase Pass](docs/screenshot/vehicle_purchase_pass.png) |
+
+---
+
+### Vehicle Search API
+
+| Failed Test (RED) | Passing Implementation (GREEN) |
+|-------------------|-------------------------------|
+| ![Vehicle Search Fail](docs/screenshot/vehicle_search_fail.png) | ![Vehicle Search Pass](docs/screenshot/vehicle_search_pass.png) |
+
+---
+
+### Vehicle Restore
+
+| Failed Test (RED) | Passing Implementation (GREEN) |
+|-------------------|-------------------------------|
+| ![Vehicle Restore Fail](docs/screenshot/vehicle_restore_fail.png) | ![Vehicle Restore Pass](docs/screenshot/vehicle_restore_pass.png) |
+
+---
+
+### Vehicle Authorization
+
+| Failed Test (RED) | Passing Implementation (GREEN) |
+|-------------------|-------------------------------|
+| ![Authorization Fail](docs/screenshot/vehicle_authorization_fail.png) | ![Authorization Pass](docs/screenshot/vehicle_authorization_pass.png) |
+
+---
+
+### Admin Inventory
+
+| Failed Test (RED) | Passing Implementation (GREEN) |
+|-------------------|-------------------------------|
+| ![Admin Fail](docs/screenshot/admin_frontend_fail.png) | ![Admin Pass](docs/screenshot/admin_frontend_pass.png) |
+
+---
+
+### Logout
+
+| Failed Test (RED) | Passing Implementation (GREEN) |
+|-------------------|-------------------------------|
+| ![Logout Fail](docs/screenshot/logout_fail.png) | ![Logout Pass](docs/screenshot/logout_pass.png) |
+
+---
+
+### Health Check
+
+![Health Check](docs/screenshot/login_reg_health.png)
+
+
 ```bash
 npm test
 ```

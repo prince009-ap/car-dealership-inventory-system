@@ -548,7 +548,7 @@ const Dashboard = () => {
             <button
               type="button"
               onClick={() => openVehicleModal("add")}
-              className="rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/40"
+              className="rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-950/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-cyan-500/30 hover:from-blue-500 hover:to-cyan-400 active:scale-[0.98]"
             >
               Add Vehicle
             </button>
@@ -556,7 +556,7 @@ const Dashboard = () => {
         )}
 
         {!modalType && (
-          <section className="mb-8 rounded-[1.75rem] border border-white/15 bg-white/10 p-6 shadow-2xl shadow-indigo-950/20 backdrop-blur-2xl">
+          <section className="mb-8 rounded-[2rem] border border-white/10 bg-slate-900/40 p-6 shadow-xl shadow-slate-950/30 backdrop-blur-2xl">
           <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">
@@ -564,14 +564,14 @@ const Dashboard = () => {
               </p>
               <h2 className="mt-2 text-2xl font-semibold text-white">Find inventory faster</h2>
             </div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-slate-950/30 px-4 py-2 text-sm font-medium text-slate-100">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-950/30 px-4 py-2 text-sm font-medium text-slate-100">
               <FiFilter className="text-cyan-300" />
               Refine results
             </div>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-            <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3">
+            <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3 transition-all duration-300 focus-within:border-cyan-400 focus-within:ring-4 focus-within:ring-cyan-400/10 focus-within:bg-slate-950/50">
               <label htmlFor="make" className="mb-2 block text-sm font-medium text-slate-200">
                 Make
               </label>
@@ -586,7 +586,7 @@ const Dashboard = () => {
               />
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3">
+            <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3 transition-all duration-300 focus-within:border-cyan-400 focus-within:ring-4 focus-within:ring-cyan-400/10 focus-within:bg-slate-950/50">
               <label htmlFor="model" className="mb-2 block text-sm font-medium text-slate-200">
                 Model
               </label>
@@ -601,7 +601,7 @@ const Dashboard = () => {
               />
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3">
+            <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3 transition-all duration-300 focus-within:border-cyan-400 focus-within:ring-4 focus-within:ring-cyan-400/10 focus-within:bg-slate-950/50">
               <label htmlFor="category" className="mb-2 block text-sm font-medium text-slate-200">
                 Category
               </label>
@@ -610,7 +610,7 @@ const Dashboard = () => {
                 name="category"
                 value={filters.category}
                 onChange={handleFilterChange}
-                className="w-full rounded-xl bg-slate-950/30 text-white focus:outline-none"
+                className="w-full rounded-xl bg-transparent text-white focus:outline-none [&>option]:bg-slate-900 [&>option]:text-white"
               >
                 <option value="">All</option>
                 <option value="Sedan">Sedan</option>
@@ -626,7 +626,7 @@ const Dashboard = () => {
               </select>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3">
+            <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3 transition-all duration-300 focus-within:border-cyan-400 focus-within:ring-4 focus-within:ring-cyan-400/10 focus-within:bg-slate-950/50">
               <label htmlFor="minPrice" className="mb-2 block text-sm font-medium text-slate-200">
                 Minimum Price
               </label>
@@ -641,7 +641,7 @@ const Dashboard = () => {
               />
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3">
+            <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3 transition-all duration-300 focus-within:border-cyan-400 focus-within:ring-4 focus-within:ring-cyan-400/10 focus-within:bg-slate-950/50">
               <label htmlFor="maxPrice" className="mb-2 block text-sm font-medium text-slate-200">
                 Maximum Price
               </label>
@@ -661,7 +661,7 @@ const Dashboard = () => {
             <button
               type="button"
               onClick={handleSearch}
-              className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 px-5 py-3 text-base font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/40"
+              className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-5 py-3 text-base font-semibold text-white shadow-lg shadow-indigo-950/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-cyan-500/30 hover:from-blue-500 hover:to-cyan-400 active:scale-[0.98]"
             >
               <FiSearch />
               <span>Search</span>
@@ -669,7 +669,7 @@ const Dashboard = () => {
             <button
               type="button"
               onClick={handleClearFilters}
-              className="rounded-2xl border border-white/15 bg-white/10 px-5 py-3 text-base font-semibold text-slate-100 transition-all duration-300 hover:scale-[1.02] hover:bg-white/15"
+              className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-base font-semibold text-slate-100 transition-all duration-300 hover:scale-[1.02] hover:bg-white/10 hover:border-white/20 active:scale-[0.98]"
             >
               Clear Filters
             </button>
@@ -719,7 +719,7 @@ const Dashboard = () => {
                 return (
                   <article
                     key={vehicle._id}
-                    className="group overflow-hidden rounded-[1.75rem] border border-white/15 bg-white/10 p-6 shadow-2xl shadow-indigo-950/20 backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1 hover:bg-white/15"
+                    className="group overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/40 p-6 shadow-xl shadow-slate-950/30 backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-500/30 hover:shadow-2xl hover:shadow-cyan-950/20 hover:bg-slate-900/50"
                   >
                     <div className="mb-5 flex items-start justify-between gap-4">
                       <div>
@@ -729,7 +729,7 @@ const Dashboard = () => {
                         <h2 className="mt-2 text-2xl font-semibold text-white">{vehicle.make}</h2>
                         <p className="mt-1 text-lg text-slate-200">{formatVehicleModel(vehicle.model)}</p>
                       </div>
-                      <div className="rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-cyan-900/30">
+                      <div className="rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-cyan-950/40 hover:from-blue-500 hover:to-cyan-400 transition-all duration-300">
                         {!isAdmin && vehicle.price === 4500000 && <span className="sr-only">{vehicle.price}</span>}
                         <span>{formatVehiclePrice(vehicle.price)}</span>
                       </div>
@@ -763,7 +763,7 @@ const Dashboard = () => {
                         type="button"
                         disabled={isOutOfStock || isPurchasing}
                         onClick={() => handlePurchase(vehicle._id)}
-                        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 px-5 py-3 text-base font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/40 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
+                        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-5 py-3 text-base font-semibold text-white shadow-lg shadow-indigo-950/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-cyan-500/30 hover:from-blue-500 hover:to-cyan-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:from-slate-800 disabled:to-slate-800 disabled:text-slate-400 disabled:border-white/5 disabled:shadow-none disabled:opacity-50 disabled:hover:scale-100"
                       >
                         <FiShoppingCart />
                         <span>{isPurchasing ? "Purchasing..." : "Purchase"}</span>
@@ -786,7 +786,7 @@ const Dashboard = () => {
                             type="button"
                             onClick={() => openVehicleModal("edit", vehicle)}
                             aria-label={index === 0 ? undefined : "Modify"}
-                            className="rounded-2xl border border-white/15 bg-white/10 px-3 py-2 text-sm font-semibold text-slate-100 transition-all duration-300 hover:scale-[1.02] hover:bg-white/15"
+                            className="rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-100 transition-all duration-300 hover:scale-[1.02] hover:bg-white/10 hover:border-white/20 active:scale-[0.98]"
                           >
                             Edit
                           </button>
@@ -794,7 +794,7 @@ const Dashboard = () => {
                             type="button"
                             onClick={() => openVehicleModal("delete", vehicle)}
                             aria-label={index === 0 ? undefined : "Remove"}
-                            className="rounded-2xl border border-rose-300/20 bg-rose-500/10 px-3 py-2 text-sm font-semibold text-rose-100 transition-all duration-300 hover:scale-[1.02] hover:bg-rose-500/20"
+                            className="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-sm font-semibold text-rose-200 transition-all duration-300 hover:scale-[1.02] hover:bg-rose-500/20 hover:border-rose-500/40 hover:text-white active:scale-[0.98]"
                           >
                             Delete
                           </button>
@@ -802,7 +802,7 @@ const Dashboard = () => {
                             type="button"
                             onClick={() => openVehicleModal("restock", vehicle)}
                             aria-label={index === 0 ? undefined : "Replenish"}
-                            className="rounded-2xl border border-cyan-300/20 bg-cyan-500/10 px-3 py-2 text-sm font-semibold text-cyan-100 transition-all duration-300 hover:scale-[1.02] hover:bg-cyan-500/20"
+                            className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-sm font-semibold text-cyan-100 transition-all duration-300 hover:scale-[1.02] hover:bg-cyan-500/20 hover:border-cyan-500/40 active:scale-[0.98]"
                           >
                             Restock
                           </button>
@@ -820,11 +820,11 @@ const Dashboard = () => {
           <div
             role="dialog"
             aria-label={modalType === "add" ? "Add Vehicle" : "Edit Vehicle"}
-            className="fixed inset-0 z-20 flex items-center justify-center bg-slate-950/70 px-4 backdrop-blur-sm"
+            className="fixed inset-0 z-20 flex items-center justify-center bg-slate-950/70 px-4 backdrop-blur-md"
           >
             <form
               onSubmit={modalType === "add" ? handleCreateVehicle : handleUpdateVehicle}
-              className="w-full max-w-2xl rounded-[1.75rem] border border-white/15 bg-slate-950/95 p-6 text-white shadow-2xl shadow-black/40"
+              className="w-full max-w-2xl rounded-[2rem] border border-white/10 bg-slate-950/95 p-8 text-white shadow-2xl shadow-black/60 backdrop-blur-3xl"
             >
               <div className="mb-5 flex items-start justify-between gap-4">
                 <div>
@@ -838,7 +838,7 @@ const Dashboard = () => {
                 <button
                   type="button"
                   onClick={closeVehicleModal}
-                  className="rounded-full border border-white/15 bg-white/10 px-3 py-2 text-sm font-semibold text-slate-100"
+                  className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-100 transition-all duration-300 hover:scale-[1.02] hover:bg-white/10 hover:border-white/20 active:scale-[0.98]"
                 >
                   Close
                 </button>
@@ -860,7 +860,7 @@ const Dashboard = () => {
                     name="make"
                     value={vehicleForm.make}
                     onChange={handleVehicleFormChange}
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition-all duration-300 placeholder:text-slate-500 focus:border-cyan-300/40"
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition-all duration-300 placeholder:text-slate-500 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/15 focus:bg-slate-900/30"
                     placeholder="Toyota"
                   />
                   {formErrors.make && <p className="mt-2 text-sm text-rose-300">{formErrors.make}</p>}
@@ -874,7 +874,7 @@ const Dashboard = () => {
                     name="model"
                     value={vehicleForm.model}
                     onChange={handleVehicleFormChange}
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition-all duration-300 placeholder:text-slate-500 focus:border-cyan-300/40"
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition-all duration-300 placeholder:text-slate-500 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/15 focus:bg-slate-900/30"
                     placeholder="Fortuner"
                   />
                   {formErrors.model && <p className="mt-2 text-sm text-rose-300">{formErrors.model}</p>}
@@ -888,7 +888,7 @@ const Dashboard = () => {
                     name="category"
                     value={vehicleForm.category}
                     onChange={handleVehicleFormChange}
-                    className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none transition-all duration-300 focus:border-cyan-300/40"
+                    className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none transition-all duration-300 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/15 focus:bg-slate-900/30 [&>option]:bg-slate-900 [&>option]:text-white"
                   >
                     <option value="" className="bg-slate-900 text-white">Select category</option>
                     <option value="Sedan" className="bg-slate-900 text-white">Sedan</option>
@@ -916,7 +916,7 @@ const Dashboard = () => {
                     type="number"
                     value={vehicleForm.price}
                     onChange={handleVehicleFormChange}
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition-all duration-300 placeholder:text-slate-500 focus:border-cyan-300/40"
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition-all duration-300 placeholder:text-slate-500 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/15 focus:bg-slate-900/30"
                     placeholder="4500000"
                   />
                   {formErrors.price && <p className="mt-2 text-sm text-rose-300">{formErrors.price}</p>}
@@ -931,7 +931,7 @@ const Dashboard = () => {
                     type="number"
                     value={vehicleForm.quantity}
                     onChange={handleVehicleFormChange}
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition-all duration-300 placeholder:text-slate-500 focus:border-cyan-300/40"
+                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition-all duration-300 placeholder:text-slate-500 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/15 focus:bg-slate-900/30"
                     placeholder="3"
                   />
                   {formErrors.quantity && (
@@ -944,14 +944,14 @@ const Dashboard = () => {
                 <button
                   type="button"
                   onClick={closeVehicleModal}
-                  className="rounded-2xl border border-white/15 bg-white/10 px-5 py-3 text-sm font-semibold text-slate-100"
+                  className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition-all duration-300 hover:scale-[1.02] hover:bg-white/10 hover:border-white/20 active:scale-[0.98]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={actionLoading}
-                  className="rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
+                  className="rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-950/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-cyan-500/30 hover:from-blue-500 hover:to-cyan-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:from-slate-800 disabled:to-slate-800 disabled:text-slate-400 disabled:border-white/5 disabled:shadow-none disabled:opacity-50 disabled:hover:scale-100"
                 >
                   {actionLoading
                     ? modalType === "add"
@@ -977,9 +977,9 @@ const Dashboard = () => {
           <div
             role="dialog"
             aria-label="Delete Vehicle"
-            className="fixed inset-0 z-20 flex items-center justify-center bg-slate-950/70 px-4 backdrop-blur-sm"
+            className="fixed inset-0 z-20 flex items-center justify-center bg-slate-950/70 px-4 backdrop-blur-md"
           >
-            <div className="w-full max-w-lg rounded-[1.75rem] border border-white/15 bg-slate-950/95 p-6 text-white shadow-2xl shadow-black/40">
+            <div className="w-full max-w-lg rounded-[2rem] border border-white/10 bg-slate-950/95 p-8 text-white shadow-2xl shadow-black/60 backdrop-blur-3xl">
               <h2 className="text-2xl font-semibold">Delete Vehicle</h2>
               <p className="mt-3 text-slate-200">
                 Are you sure you want to delete this vehicle?
@@ -995,7 +995,7 @@ const Dashboard = () => {
                 <button
                   type="button"
                   onClick={closeVehicleModal}
-                  className="rounded-2xl border border-white/15 bg-white/10 px-5 py-3 text-sm font-semibold text-slate-100"
+                  className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition-all duration-300 hover:scale-[1.02] hover:bg-white/10 hover:border-white/20 active:scale-[0.98]"
                 >
                   Cancel
                 </button>
@@ -1003,7 +1003,7 @@ const Dashboard = () => {
                   type="button"
                   disabled={actionLoading}
                   onClick={handleDeleteVehicle}
-                  className="rounded-2xl bg-gradient-to-r from-rose-500 to-red-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-900/30 transition-all duration-300 hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
+                  className="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-5 py-3 text-sm font-semibold text-rose-200 transition-all duration-300 hover:scale-[1.02] hover:bg-rose-500/20 hover:border-rose-500/40 hover:text-white active:scale-[0.98] disabled:cursor-not-allowed disabled:from-slate-800 disabled:to-slate-800 disabled:text-slate-400 disabled:border-white/5 disabled:shadow-none disabled:opacity-50 disabled:hover:scale-100"
                 >
                   {actionLoading ? "Deleting..." : "Confirm Delete"}
                 </button>
@@ -1023,9 +1023,9 @@ const Dashboard = () => {
           <div
             role="dialog"
             aria-label="Restock Vehicle"
-            className="fixed inset-0 z-20 flex items-center justify-center bg-slate-950/70 px-4 backdrop-blur-sm"
+            className="fixed inset-0 z-20 flex items-center justify-center bg-slate-950/70 px-4 backdrop-blur-md"
           >
-            <form className="w-full max-w-lg rounded-[1.75rem] border border-white/15 bg-slate-950/95 p-6 text-white shadow-2xl shadow-black/40">
+            <form className="w-full max-w-lg rounded-[2rem] border border-white/10 bg-slate-950/95 p-8 text-white shadow-2xl shadow-black/60 backdrop-blur-3xl">
               <h2 className="text-2xl font-semibold">Restock Vehicle</h2>
               <p className="mt-3 text-slate-200">
                 Increase quantity for {selectedVehicle.make} {selectedVehicle.model}.
@@ -1047,7 +1047,7 @@ const Dashboard = () => {
                   type="number"
                   value={vehicleForm.quantity}
                   onChange={handleVehicleFormChange}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition-all duration-300 placeholder:text-slate-500 focus:border-cyan-300/40"
+                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition-all duration-300 placeholder:text-slate-500 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/15 focus:bg-slate-900/30"
                   placeholder="5"
                 />
               </div>
@@ -1056,7 +1056,7 @@ const Dashboard = () => {
                 <button
                   type="button"
                   onClick={closeVehicleModal}
-                  className="rounded-2xl border border-white/15 bg-white/10 px-5 py-3 text-sm font-semibold text-slate-100"
+                  className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition-all duration-300 hover:scale-[1.02] hover:bg-white/10 hover:border-white/20 active:scale-[0.98]"
                 >
                   Cancel
                 </button>
@@ -1064,7 +1064,7 @@ const Dashboard = () => {
                   type="button"
                   disabled={actionLoading}
                   onClick={handleRestockVehicle}
-                  className="rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
+                  className="rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-950/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-cyan-500/30 hover:from-blue-500 hover:to-cyan-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:from-slate-800 disabled:to-slate-800 disabled:text-slate-400 disabled:border-white/5 disabled:shadow-none disabled:opacity-50 disabled:hover:scale-100"
                 >
                   {actionLoading ? "Restocking..." : "Restock Vehicle"}
                 </button>
