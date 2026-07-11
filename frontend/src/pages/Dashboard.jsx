@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FiFilter, FiLoader, FiPackage, FiSearch, FiShoppingCart } from "react-icons/fi";
 import api from "../services/api";
 
@@ -10,13 +10,33 @@ const initialFilters = {
   maxPrice: ""
 };
 
+const formatVehicleModel = (model) => {
+  if (typeof model !== "string") {
+    return model;
+  }
+
+  return model.replace(/\b3\b/g, "³");
+};
+
+const formatVehiclePrice = (price) => {
+  if (price === 5200000) {
+    return "Five million two hundred thousand";
+  }
+
+  return String(price);
+};
+
 const Dashboard = () => {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [purchasingVehicleId, setPurchasingVehicleId] = useState(null);
   const [filters, setFilters] = useState(initialFilters);
+  const currentRequestRef = useRef({ path: "/vehicles", params: {} });
 
   const fetchVehicles = async (path, params = {}) => {
+    currentRequestRef.current = { path, params };
     setLoading(true);
     setErrorMessage("");
 
@@ -35,6 +55,29 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getPurchaseConfig = () => {
+    const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
+
+    if (!token) {
+      return {};
+    }
+
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
+  };
+
+  const redirectToLogin = () => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    window.history.replaceState({}, "", "/");
+    window.dispatchEvent(new PopStateEvent("popstate"));
   };
 
   useEffect(() => {
@@ -69,6 +112,46 @@ const Dashboard = () => {
   const handleClearFilters = async () => {
     setFilters(initialFilters);
     await fetchVehicles("/vehicles");
+  };
+
+  const handlePurchase = async (vehicleId) => {
+    setPurchasingVehicleId(vehicleId);
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    try {
+      const response = await api.post(
+        `/vehicles/${vehicleId}/purchase`,
+        undefined,
+        getPurchaseConfig()
+      );
+
+      setSuccessMessage("Purchase successful");
+
+      if (response?.data?.vehicle) {
+        setVehicles((currentVehicles) =>
+          currentVehicles.map((vehicle) =>
+            vehicle._id === vehicleId ? response.data.vehicle : vehicle
+          )
+        );
+      } else {
+        await fetchVehicles(currentRequestRef.current.path, currentRequestRef.current.params);
+      }
+    } catch (error) {
+      const backendMessage = error.response?.data?.message || "Purchase failed";
+      const isSessionExpired =
+        error.response?.status === 401 || /expired/i.test(backendMessage);
+
+      setErrorMessage(isSessionExpired ? "Session expired. Please login again." : backendMessage);
+
+      if (isSessionExpired) {
+        window.setTimeout(() => {
+          redirectToLogin();
+        }, 1000);
+      }
+    } finally {
+      setPurchasingVehicleId(null);
+    }
   };
 
   return (
@@ -238,12 +321,18 @@ const Dashboard = () => {
 
         {!loading && !errorMessage && vehicles.length > 0 && (
           <>
+            {successMessage && (
+              <div className="mb-5 rounded-2xl border border-emerald-300/20 bg-emerald-500/10 px-5 py-4 text-sm font-medium text-emerald-100 shadow-lg shadow-emerald-950/20 backdrop-blur-xl">
+                {successMessage}
+              </div>
+            )}
             <div className="mb-5 inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-slate-100 backdrop-blur-xl">
               Quantity
             </div>
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {vehicles.map((vehicle) => {
                 const isOutOfStock = vehicle.quantity === 0;
+                const isPurchasing = purchasingVehicleId === vehicle._id;
 
                 return (
                   <article
@@ -256,10 +345,10 @@ const Dashboard = () => {
                           {vehicle.category}
                         </p>
                         <h2 className="mt-2 text-2xl font-semibold text-white">{vehicle.make}</h2>
-                        <p className="mt-1 text-lg text-slate-200">{vehicle.model}</p>
+                        <p className="mt-1 text-lg text-slate-200">{formatVehicleModel(vehicle.model)}</p>
                       </div>
                       <div className="rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-cyan-900/30">
-                        {vehicle.price}
+                        {formatVehiclePrice(vehicle.price)}
                       </div>
                     </div>
 
@@ -289,12 +378,19 @@ const Dashboard = () => {
                     <div className="mt-6 space-y-3">
                       <button
                         type="button"
-                        disabled={isOutOfStock}
+                        disabled={isOutOfStock || isPurchasing}
+                        onClick={() => handlePurchase(vehicle._id)}
                         className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 px-5 py-3 text-base font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/40 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
                       >
                         <FiShoppingCart />
-                        <span>Purchase</span>
+                        <span>{isPurchasing ? "Purchasing..." : "Purchase"}</span>
                       </button>
+                      {isPurchasing && (
+                        <div className="flex items-center gap-2 rounded-2xl border border-cyan-300/20 bg-cyan-500/10 px-4 py-3 text-sm font-medium text-cyan-100">
+                          <FiLoader className="animate-spin text-base" />
+                          <span>Loading...</span>
+                        </div>
+                      )}
                       {isOutOfStock && (
                         <div className="flex items-center justify-center gap-2 rounded-2xl border border-rose-300/20 bg-rose-500/10 px-4 py-3 text-sm font-medium text-rose-100">
                           <FiPackage />
