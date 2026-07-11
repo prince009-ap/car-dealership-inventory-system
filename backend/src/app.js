@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const authRoutes = require("./routes/auth.routes");
 const healthRoutes = require("./routes/healthRoutes");
 const protectedRoutes = require("./routes/protected.routes");
@@ -9,12 +10,13 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173" || "https://localhost:5174",
+    origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
 app.use(express.json());
+app.use("/public", express.static(path.join(__dirname, "../public")));
 app.use("/api/auth", authRoutes);
 app.use("/api", healthRoutes);
 app.use("/api", protectedRoutes);

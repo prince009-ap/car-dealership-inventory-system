@@ -74,7 +74,8 @@ const toVehicleRecord = (vehicleData) => ({
   model: vehicleData.model,
   category: vehicleData.category,
   price: vehicleData.price,
-  quantity: vehicleData.quantity
+  quantity: vehicleData.quantity,
+  image: vehicleData.image
 });
 
 const createVehicle = async (vehicleData) => {

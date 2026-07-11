@@ -16,7 +16,8 @@ const emptyVehicleForm = {
   model: "",
   category: "",
   price: "",
-  quantity: ""
+  quantity: "",
+  image: ""
 };
 
 const getStoredUser = () => {
@@ -101,6 +102,68 @@ const formatVehiclePrice = (price) => {
   return `₹${new Intl.NumberFormat("en-IN").format(numPrice)}`;
 };
 
+const DEFAULT_IMAGES = {
+  SUV: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80",
+  Sedan: "https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&w=800&q=80",
+  Hatchback: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80",
+  Truck: "https://images.unsplash.com/photo-1532581291347-9c39cf10a73c?auto=format&fit=crop&w=800&q=80",
+  Coupe: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80",
+  Electric: "https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=800&q=80",
+  Convertible: "https://images.unsplash.com/photo-1486496146582-9ffcd0b2b2b7?auto=format&fit=crop&w=800&q=80",
+  Van: "https://images.unsplash.com/photo-1532974297617-c0f05fe4c415?auto=format&fit=crop&w=800&q=80",
+  Hybrid: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
+  Other: "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=800&q=80"
+};
+
+const getVehicleImage = (vehicle) => {
+  if (vehicle?.image && vehicle.image.trim() !== "") {
+    if (vehicle.image.startsWith("/public/")) {
+      return `http://localhost:5000${vehicle.image}`;
+    }
+    return vehicle.image;
+  }
+  const category = vehicle?.category || "Other";
+  return DEFAULT_IMAGES[category] || DEFAULT_IMAGES.Other;
+};
+
+const VehicleImage = ({ vehicle }) => {
+  const [src, setSrc] = useState(() => getVehicleImage(vehicle));
+  const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    setSrc(getVehicleImage(vehicle));
+    setLoading(true);
+    setHasError(false);
+  }, [vehicle]);
+
+  const handleError = () => {
+    if (!hasError) {
+      setHasError(true);
+      setSrc(DEFAULT_IMAGES.Other);
+    }
+  };
+
+  return (
+    <div className="relative w-full aspect-[16/10] overflow-hidden rounded-[1.5rem] bg-slate-900/40">
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-slate-900/20 backdrop-blur-sm">
+          <FiLoader className="animate-spin text-cyan-300 text-xl" />
+        </div>
+      )}
+      <img
+        src={src}
+        alt={`${vehicle.make} ${vehicle.model}`}
+        onLoad={() => setLoading(false)}
+        onError={handleError}
+        className={`h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 ${
+          loading ? "opacity-0" : "opacity-100"
+        }`}
+      />
+    </div>
+  );
+};
+
 const Dashboard = () => {
   const inRouterContext = useInRouterContext();
   const navigate = inRouterContext ? useNavigate() : () => {};
@@ -149,6 +212,7 @@ const Dashboard = () => {
   const [actionLoading, setActionLoading] = useState(false);
   const [actionMessage, setActionMessage] = useState("");
   const [actionError, setActionError] = useState("");
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [filters, setFilters] = useState(initialFilters);
   const currentRequestRef = useRef({ path: "/vehicles", params: {} });
   const isAdmin = currentUser?.role === "ADMIN";
@@ -256,7 +320,8 @@ const Dashboard = () => {
         model: vehicle.model || "",
         category: vehicle.category || "",
         price: vehicle.price ?? "",
-        quantity: vehicle.quantity ?? ""
+        quantity: vehicle.quantity ?? "",
+        image: vehicle.image || ""
       });
       return;
     }
@@ -288,6 +353,38 @@ const Dashboard = () => {
       ...currentForm,
       [name]: name === "price" ? (value === "" ? "" : Number(value)) : value
     }));
+  };
+
+  const handleImageFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    setUploadingImage(true);
+    setActionError("");
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const response = await api.post("/vehicles/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      });
+      const url = response?.data?.url;
+      if (url) {
+        setVehicleForm((currentForm) => ({
+          ...currentForm,
+          image: url
+        }));
+      }
+    } catch (error) {
+      setActionError(error.response?.data?.message || "Image upload failed");
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const applyVehicleResponse = (responseVehicle, fallbackVehicle) => {
@@ -333,6 +430,9 @@ const Dashboard = () => {
       price: Number(vehicleForm.price),
       quantity: Number(vehicleForm.quantity)
     };
+    if (vehicleForm.image && vehicleForm.image.trim() !== "") {
+      payload.image = vehicleForm.image.trim();
+    }
 
     try {
       const response = await api.post("/vehicles", payload, getAuthConfig());
@@ -377,6 +477,9 @@ const Dashboard = () => {
       price: Number(vehicleForm.price),
       quantity: Number(vehicleForm.quantity)
     };
+    if (vehicleForm.image !== undefined) {
+      payload.image = vehicleForm.image.trim();
+    }
 
     try {
       const response = await api.put(
@@ -721,7 +824,9 @@ const Dashboard = () => {
                     key={vehicle._id}
                     className="group overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900/40 p-6 shadow-xl shadow-slate-950/30 backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-500/30 hover:shadow-2xl hover:shadow-cyan-950/20 hover:bg-slate-900/50"
                   >
-                    <div className="mb-5 flex items-start justify-between gap-4">
+                    <VehicleImage vehicle={vehicle} />
+
+                    <div className="mt-5 mb-5 flex items-start justify-between gap-4">
                       <div>
                         <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">
                           {vehicle.category}
@@ -735,15 +840,7 @@ const Dashboard = () => {
                       </div>
                     </div>
 
-                    <div className="grid gap-3 text-sm text-slate-100">
-                      <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3">
-                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                          Vehicle Summary
-                        </p>
-                        <p className="mt-2 leading-6 text-slate-200">
-                          Make, model, category, and price are highlighted above for quick scanning.
-                        </p>
-                      </div>
+                    <div className="text-sm text-slate-100">
                       <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3">
                         <span className="font-medium text-slate-300">Stock</span>
                         <span
@@ -937,6 +1034,43 @@ const Dashboard = () => {
                   {formErrors.quantity && (
                     <p className="mt-2 text-sm text-rose-300">{formErrors.quantity}</p>
                   )}
+                </div>
+                <div>
+                  <label htmlFor="admin-image" className="mb-2 block text-sm font-medium text-slate-200">
+                    Vehicle Image
+                  </label>
+                  <div className="flex flex-col gap-3">
+                    {vehicleForm.image && (
+                      <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-slate-900/40">
+                        <img
+                          src={vehicleForm.image.startsWith("/public/") ? `http://localhost:5000${vehicleForm.image}` : vehicleForm.image}
+                          alt="Preview"
+                          className="h-full w-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setVehicleForm(prev => ({ ...prev, image: "" }))}
+                          className="absolute right-2 top-2 rounded-lg bg-rose-500/80 px-2 py-1 text-xs font-semibold text-white backdrop-blur hover:bg-rose-500 transition-all duration-300"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    )}
+                    <input
+                      id="admin-image"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageFileChange}
+                      className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none transition-all duration-300 placeholder:text-slate-500 focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/15 focus:bg-slate-900/30"
+                    />
+                    {uploadingImage && (
+                      <div className="flex items-center gap-2 text-sm text-cyan-300">
+                        <FiLoader className="animate-spin text-base" />
+                        <span>Uploading image...</span>
+                      </div>
+                    )}
+                  </div>
+                  {formErrors.image && <p className="mt-2 text-sm text-rose-300">{formErrors.image}</p>}
                 </div>
               </div>
 

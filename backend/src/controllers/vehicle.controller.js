@@ -98,6 +98,23 @@ const deleteVehicle = async (req, res) => {
   });
 };
 
+const uploadImage = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({
+      success: false,
+      message: "Please upload an image file"
+    });
+  }
+
+  const filePath = `/public/uploads/${req.file.filename}`;
+
+  return res.status(200).json({
+    success: true,
+    message: "Image uploaded successfully",
+    url: filePath
+  });
+};
+
 module.exports = {
   createVehicle,
   deleteVehicle,
@@ -105,5 +122,6 @@ module.exports = {
   purchaseVehicle,
   restockVehicle,
   searchVehicles,
-  updateVehicle
+  updateVehicle,
+  uploadImage
 };
