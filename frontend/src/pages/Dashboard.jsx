@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useInRouterContext } from "react-router-dom";
 import { FiFilter, FiLoader, FiPackage, FiSearch, FiShoppingCart } from "react-icons/fi";
 import api from "../services/api";
 
@@ -101,8 +102,42 @@ const formatVehiclePrice = (price) => {
 };
 
 const Dashboard = () => {
+  const inRouterContext = useInRouterContext();
+  const navigate = inRouterContext ? useNavigate() : () => {};
   const [currentUser] = useState(() => getStoredUser());
   const [vehicles, setVehicles] = useState([]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    navigate("/");
+  };
+
+  useEffect(() => {
+    if (!api.interceptors?.response?.use) {
+      return;
+    }
+    const interceptor = api.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        const backendMessage = error.response?.data?.message || "";
+        const isSessionExpired =
+          error.response?.status === 401 || /expired/i.test(backendMessage);
+
+        if (isSessionExpired) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          localStorage.setItem("session_expired", "true");
+          navigate("/");
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      api.interceptors?.response?.eject?.(interceptor);
+    };
+  }, [navigate]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -133,7 +168,17 @@ const Dashboard = () => {
         : response?.data?.vehicles || [];
       setVehicles(nextVehicles);
     } catch (error) {
-      setErrorMessage(error.response?.data?.message || "Failed to fetch vehicles");
+      const backendMessage = error.response?.data?.message || "Failed to fetch vehicles";
+      const isSessionExpired = error.response?.status === 401 || /expired/i.test(backendMessage);
+
+      if (isSessionExpired) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.setItem("session_expired", "true");
+        navigate("/");
+      } else {
+        setErrorMessage(backendMessage);
+      }
       setVehicles([]);
     } finally {
       setLoading(false);
@@ -476,8 +521,17 @@ const Dashboard = () => {
               <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
             </div>
           </div>
-          <div className="hidden rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-slate-100 backdrop-blur md:block">
-            Inventory Overview
+          <div className="flex items-center gap-4">
+            <div className="hidden rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-medium text-slate-100 backdrop-blur md:block">
+              Inventory Overview
+            </div>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-full border border-white/15 bg-rose-500/20 px-4 py-2 text-sm font-medium text-rose-200 backdrop-blur hover:bg-rose-500/30 transition-all duration-300"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </nav>
