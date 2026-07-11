@@ -123,149 +123,118 @@ const Register = () => {
   );
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-700 via-indigo-700 to-cyan-600 px-4 py-10">
+    <div 
+      className="relative flex min-h-screen items-center justify-center bg-cover bg-center px-4 py-10"
+      style={{
+        backgroundImage: "url('https://4kwallpapers.com/images/wallpapers/lamborghini-cars-sports-cars-luxury-cars-automobile-speed-5k-2880x1800-4140.jpg')"
+      }}
+    >
+      <div className="absolute inset-0 bg-[#020617]/75" />
+
       <form
         onSubmit={handleSubmit}
-        className="relative w-full max-w-6xl overflow-hidden rounded-[2rem] border border-white/15 bg-white/10 p-8 shadow-2xl shadow-indigo-950/30 backdrop-blur-2xl transition-all duration-300 sm:p-10 lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:p-0"
+        className="relative w-full max-w-xl overflow-hidden rounded-[2rem] border border-white/20 bg-slate-950/70 p-8 shadow-[0_24px_80px_rgba(15,23,42,0.6)] backdrop-blur-3xl transition-all duration-500 hover:-translate-y-1.5 hover:shadow-cyan-500/10 hover:border-white/30 sm:p-10"
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.25),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(6,182,212,0.18),_transparent_25%)]" />
 
-        <div className="relative hidden flex-col justify-between overflow-hidden rounded-[2rem] bg-gradient-to-br from-blue-700 via-indigo-700 to-cyan-600 p-10 text-white lg:flex">
-          <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
-          <div className="absolute -bottom-24 -left-16 h-64 w-64 rounded-full bg-cyan-300/20 blur-3xl" />
-
-          <div className="space-y-6">
-            <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur transition-all duration-300 hover:scale-[1.02]">
-              <span className="h-2.5 w-2.5 rounded-full bg-cyan-300 shadow-[0_0_20px_rgba(34,211,238,0.9)]" />
-              Premium Car Inventory System
+        <div className="relative">
+          <div className="mb-8 space-y-4">
+            <div className="inline-flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 text-lg font-bold text-white shadow-lg shadow-indigo-500/30">
+                A
+              </div>
+              <div>
+                <p className="text-sm font-medium uppercase tracking-[0.24em] text-cyan-300">
+                  AI Car
+                </p>
+                <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+                  Create your account
+                </h2>
+              </div>
             </div>
-            <div className="space-y-4">
-              <h1 className="max-w-md text-5xl font-semibold leading-tight tracking-tight sm:text-6xl">
-                Join the platform
-              </h1>
-              <p className="max-w-md text-lg leading-8 text-white/80">
-                Create your access to manage vehicles, teams, and dealership operations from one polished dashboard.
-              </p>
-            </div>
+            <p className="max-w-md text-sm leading-6 text-slate-300 sm:text-base">
+              Create your account to unlock the inventory workspace and keep your dealership in sync.
+            </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            {[
-              { title: "Team Ready", value: "Built for daily operations" },
-              { title: "Secure Access", value: "Protected account setup" }
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="rounded-2xl border border-white/20 bg-white/10 p-4 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:bg-white/15"
-              >
-                <p className="text-sm uppercase tracking-[0.2em] text-white/60">{item.title}</p>
-                <p className="mt-2 text-lg font-medium">{item.value}</p>
-              </div>
-            ))}
+          <div
+            className={`mb-5 rounded-2xl border px-4 py-3 text-sm font-medium transition-all duration-300 ${
+              errorMessage
+                ? "border-rose-400/40 bg-rose-500/10 text-rose-100"
+                : "border-transparent bg-transparent"
+            }`}
+            aria-live="polite"
+          >
+            {errorMessage || "\u00A0"}
           </div>
-        </div>
 
-        <div className="relative flex items-center justify-center p-0 lg:p-10">
-          <div className="w-full max-w-xl rounded-[1.75rem] border border-white/20 bg-slate-950/75 p-8 shadow-[0_24px_80px_rgba(15,23,42,0.45)] transition-all duration-300 sm:p-10">
-            <div className="mb-8 space-y-4">
-              <div className="inline-flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 text-lg font-bold text-white shadow-lg shadow-indigo-500/30">
-                  A
-                </div>
-                <div>
-                  <p className="text-sm font-medium uppercase tracking-[0.24em] text-cyan-300">
-                    AI Car
-                  </p>
-                  <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-                    Create your account
-                  </h2>
-                </div>
-              </div>
-              <p className="max-w-md text-sm leading-6 text-slate-300 sm:text-base">
-                Create your account to unlock the inventory workspace and keep your dealership in sync.
-              </p>
+          {successMessage && (
+            <div className="mb-5 rounded-2xl border border-emerald-400/40 bg-emerald-500/10 px-4 py-3 text-sm font-medium text-emerald-100">
+              {successMessage}
             </div>
+          )}
 
-            <div
-              className={`mb-5 rounded-2xl border px-4 py-3 text-sm font-medium transition-all duration-300 ${
-                errorMessage
-                  ? "border-rose-400/40 bg-rose-500/10 text-rose-100"
-                  : "border-transparent bg-transparent"
-              }`}
-              aria-live="polite"
-            >
-              {errorMessage || "\u00A0"}
+          {renderField({
+            icon: FiUser,
+            label: "Name",
+            id: "name",
+            name: "name",
+            placeholder: "Enter your name",
+            error: errors.name
+          })}
+
+          {renderField({
+            icon: FiMail,
+            label: "Email",
+            id: "email",
+            name: "email",
+            type: "email",
+            placeholder: "Enter your email",
+            error: errors.email
+          })}
+
+          {renderField({
+            icon: FiLock,
+            label: "Password",
+            id: "password",
+            name: "password",
+            type: "password",
+            placeholder: "Enter your password",
+            error: errors.password
+          })}
+
+          {renderField({
+            icon: FiLock,
+            label: "Confirm Password",
+            id: "confirmPassword",
+            name: "confirmPassword",
+            type: "password",
+            placeholder: "Confirm your password",
+            error: errors.confirmPassword
+          })}
+
+          {loading && (
+            <div className="mb-5 flex items-center gap-3 rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-3 text-sm font-medium text-cyan-100">
+              <FiLoader className="animate-spin text-lg" />
+              <span>Loading...</span>
             </div>
+          )}
 
-            {successMessage && (
-              <div className="mb-5 flex items-center gap-3 rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm font-medium text-emerald-100">
-                <FiCheckCircle className="text-lg" />
-                <span>{successMessage}</span>
-              </div>
-            )}
+          <button
+            type="submit"
+            disabled={loading}
+            className="group relative flex w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-5 py-4 text-base font-semibold text-white shadow-lg shadow-indigo-950/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-cyan-500/30 hover:from-blue-500 hover:to-cyan-400 disabled:cursor-not-allowed disabled:from-slate-800 disabled:to-slate-800 disabled:text-slate-400 disabled:border-white/5 disabled:shadow-none disabled:opacity-50 disabled:hover:scale-100"
+          >
+            <span className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 via-white/10 to-transparent opacity-0 transition-all duration-300 group-hover:opacity-100" />
+            <span className="relative">{loading ? "Registering..." : "Register"}</span>
+          </button>
 
-            {renderField({
-              icon: FiUser,
-              label: "Name",
-              id: "name",
-              name: "name",
-              placeholder: "Enter your full name",
-              error: errors.name
-            })}
-
-            {renderField({
-              icon: FiMail,
-              label: "Email",
-              id: "email",
-              name: "email",
-              type: "email",
-              placeholder: "Enter your email",
-              error: errors.email
-            })}
-
-            {renderField({
-              icon: FiLock,
-              label: "Password",
-              id: "password",
-              name: "password",
-              type: "password",
-              placeholder: "Create a password",
-              error: errors.password
-            })}
-
-            {renderField({
-              icon: FiLock,
-              label: "Confirm Password",
-              id: "confirm-password",
-              name: "confirmPassword",
-              type: "password",
-              placeholder: "Confirm your password",
-              error: errors.confirmPassword
-            })}
-
-            {loading && (
-              <div className="mb-5 flex items-center gap-3 rounded-2xl border border-cyan-400/20 bg-cyan-400/10 px-4 py-3 text-sm font-medium text-cyan-100">
-                <FiLoader className="animate-spin text-lg" />
-                <span>Loading...</span>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative flex w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 px-5 py-4 text-base font-semibold text-white shadow-lg shadow-indigo-950/50 transition-all duration-300 hover:scale-[1.02] hover:shadow-cyan-500/30 hover:from-blue-500 hover:to-cyan-400 disabled:cursor-not-allowed disabled:from-slate-800 disabled:to-slate-800 disabled:text-slate-400 disabled:border-white/5 disabled:shadow-none disabled:opacity-50 disabled:hover:scale-100"
-            >
-              <span className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 via-white/10 to-transparent opacity-0 transition-all duration-300 group-hover:opacity-100" />
-              <span className="relative">{loading ? "Registering..." : "Register"}</span>
-            </button>
-
-            <Link
-              to="/"
-              className="mt-6 block text-center text-sm font-semibold text-cyan-300 transition-all duration-300 hover:text-cyan-200 hover:underline"
-            >
-              Already have an account? Login
-            </Link>
-          </div>
+          <Link
+            to="/"
+            className="mt-6 block text-center text-sm font-semibold text-cyan-300 transition-all duration-300 hover:text-cyan-200 hover:underline"
+          >
+            Already have an account? Login
+          </Link>
         </div>
       </form>
     </div>

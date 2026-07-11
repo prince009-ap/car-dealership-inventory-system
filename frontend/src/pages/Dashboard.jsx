@@ -610,7 +610,14 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-700 via-indigo-700 to-cyan-600 text-white">
+    <div 
+      className="relative min-h-screen bg-cover bg-center text-white"
+      style={{
+        backgroundImage: "url('https://4kwallpapers.com/images/wallpapers/lamborghini-cars-sports-cars-luxury-cars-automobile-speed-5k-2880x1800-4140.jpg')"
+      }}
+    >
+      <div className="absolute inset-0 bg-[#020617]/75" />
+      <div className="relative z-10 flex flex-col min-h-screen">
       <nav className="sticky top-0 z-10 border-b border-white/15 bg-slate-950/40 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
@@ -1214,6 +1221,7 @@ const Dashboard = () => {
           </div>
         )}
       </main>
+      </div>
     </div>
   );
 };
