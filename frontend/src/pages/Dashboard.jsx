@@ -1,44 +1,75 @@
 import React, { useEffect, useState } from "react";
-import { FiLoader, FiPackage, FiShoppingCart } from "react-icons/fi";
+import { FiFilter, FiLoader, FiPackage, FiSearch, FiShoppingCart } from "react-icons/fi";
 import api from "../services/api";
+
+const initialFilters = {
+  make: "",
+  model: "",
+  category: "",
+  minPrice: "",
+  maxPrice: ""
+};
 
 const Dashboard = () => {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [filters, setFilters] = useState(initialFilters);
+
+  const fetchVehicles = async (path, params = {}) => {
+    setLoading(true);
+    setErrorMessage("");
+
+    try {
+      const response =
+        Object.keys(params).length > 0
+          ? await api.get(path, { params })
+          : await api.get(path);
+      const nextVehicles = Array.isArray(response?.data)
+        ? response.data
+        : response?.data?.vehicles || [];
+      setVehicles(nextVehicles);
+    } catch (error) {
+      setErrorMessage(error.response?.data?.message || "Failed to fetch vehicles");
+      setVehicles([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     let isMounted = true;
 
-    const fetchVehicles = async () => {
-      setLoading(true);
-      setErrorMessage("");
-
-      try {
-        const response = await api.get("/vehicles");
-        const nextVehicles = response.data?.vehicles || [];
-
-        if (isMounted) {
-          setVehicles(nextVehicles);
-        }
-      } catch (error) {
-        if (isMounted) {
-          setErrorMessage(error.response?.data?.message || "Failed to fetch vehicles");
-          setVehicles([]);
-        }
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchVehicles();
+    if (isMounted) {
+      fetchVehicles("/vehicles");
+    }
 
     return () => {
       isMounted = false;
     };
   }, []);
+
+  const handleFilterChange = (event) => {
+    const { name, value } = event.target;
+
+    setFilters((currentFilters) => ({
+      ...currentFilters,
+      [name]: value
+    }));
+  };
+
+  const handleSearch = async () => {
+    const params = Object.fromEntries(
+      Object.entries(filters).filter(([, value]) => value !== "")
+    );
+
+    await fetchVehicles("/vehicles/search", params);
+  };
+
+  const handleClearFilters = async () => {
+    setFilters(initialFilters);
+    await fetchVehicles("/vehicles");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-700 via-indigo-700 to-cyan-600 text-white">
@@ -62,6 +93,126 @@ const Dashboard = () => {
       </nav>
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <section className="mb-8 rounded-[1.75rem] border border-white/15 bg-white/10 p-6 shadow-2xl shadow-indigo-950/20 backdrop-blur-2xl">
+          <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">
+                Search & Filter
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold text-white">Find inventory faster</h2>
+            </div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-slate-950/30 px-4 py-2 text-sm font-medium text-slate-100">
+              <FiFilter className="text-cyan-300" />
+              Refine results
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+            <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3">
+              <label htmlFor="make" className="mb-2 block text-sm font-medium text-slate-200">
+                Make
+              </label>
+              <input
+                id="make"
+                name="make"
+                type="text"
+                value={filters.make}
+                onChange={handleFilterChange}
+                className="w-full rounded-xl bg-transparent text-white placeholder:text-slate-500 focus:outline-none"
+                placeholder="Toyota"
+              />
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3">
+              <label htmlFor="model" className="mb-2 block text-sm font-medium text-slate-200">
+                Model
+              </label>
+              <input
+                id="model"
+                name="model"
+                type="text"
+                value={filters.model}
+                onChange={handleFilterChange}
+                className="w-full rounded-xl bg-transparent text-white placeholder:text-slate-500 focus:outline-none"
+                placeholder="Fortuner"
+              />
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3">
+              <label htmlFor="category" className="mb-2 block text-sm font-medium text-slate-200">
+                Category
+              </label>
+              <select
+                id="category"
+                name="category"
+                value={filters.category}
+                onChange={handleFilterChange}
+                className="w-full rounded-xl bg-slate-950/30 text-white focus:outline-none"
+              >
+                <option value="">All</option>
+                <option value="Sedan">Sedan</option>
+                <option value="SUV">Sport Utility</option>
+                <option value="Hatchback">City Hatch</option>
+                <option value="Coupe">Performance Coupe</option>
+                <option value="Convertible">Open Top</option>
+                <option value="Truck">Utility Truck</option>
+                <option value="Van">Family Van</option>
+                <option value="Electric">EV</option>
+                <option value="Hybrid">Hybrid Drive</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3">
+              <label htmlFor="minPrice" className="mb-2 block text-sm font-medium text-slate-200">
+                Minimum Price
+              </label>
+              <input
+                id="minPrice"
+                name="minPrice"
+                type="number"
+                value={filters.minPrice}
+                onChange={handleFilterChange}
+                className="w-full rounded-xl bg-transparent text-white placeholder:text-slate-500 focus:outline-none"
+                placeholder="1000000"
+              />
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3">
+              <label htmlFor="maxPrice" className="mb-2 block text-sm font-medium text-slate-200">
+                Maximum Price
+              </label>
+              <input
+                id="maxPrice"
+                name="maxPrice"
+                type="number"
+                value={filters.maxPrice}
+                onChange={handleFilterChange}
+                className="w-full rounded-xl bg-transparent text-white placeholder:text-slate-500 focus:outline-none"
+                placeholder="5000000"
+              />
+            </div>
+          </div>
+
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <button
+              type="button"
+              onClick={handleSearch}
+              className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 px-5 py-3 text-base font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/40"
+            >
+              <FiSearch />
+              <span>Search</span>
+            </button>
+            <button
+              type="button"
+              onClick={handleClearFilters}
+              className="rounded-2xl border border-white/15 bg-white/10 px-5 py-3 text-base font-semibold text-slate-100 transition-all duration-300 hover:scale-[1.02] hover:bg-white/15"
+            >
+              Clear Filters
+            </button>
+          </div>
+        </section>
+
         {loading && (
           <div className="flex min-h-[40vh] items-center justify-center">
             <div className="flex items-center gap-3 rounded-2xl border border-cyan-400/20 bg-white/10 px-6 py-4 text-lg font-medium backdrop-blur-xl">
@@ -92,67 +243,67 @@ const Dashboard = () => {
             </div>
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {vehicles.map((vehicle) => {
-              const isOutOfStock = vehicle.quantity === 0;
+                const isOutOfStock = vehicle.quantity === 0;
 
-              return (
-                <article
-                  key={vehicle._id}
-                  className="group overflow-hidden rounded-[1.75rem] border border-white/15 bg-white/10 p-6 shadow-2xl shadow-indigo-950/20 backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1 hover:bg-white/15"
-                >
-                  <div className="mb-5 flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">
-                        {vehicle.category}
-                      </p>
-                      <h2 className="mt-2 text-2xl font-semibold text-white">{vehicle.make}</h2>
-                      <p className="mt-1 text-lg text-slate-200">{vehicle.model}</p>
-                    </div>
-                    <div className="rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-cyan-900/30">
-                      {vehicle.price}
-                    </div>
-                  </div>
-
-                  <div className="grid gap-3 text-sm text-slate-100">
-                    <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3">
-                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                        Vehicle Summary
-                      </p>
-                      <p className="mt-2 leading-6 text-slate-200">
-                        Make, model, category, and price are highlighted above for quick scanning.
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3">
-                      <span className="font-medium text-slate-300">Stock</span>
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${
-                          isOutOfStock
-                            ? "bg-rose-500/20 text-rose-200"
-                            : "bg-emerald-500/20 text-emerald-200"
-                        }`}
-                      >
-                        {vehicle.quantity}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 space-y-3">
-                    <button
-                      type="button"
-                      disabled={isOutOfStock}
-                      className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 px-5 py-3 text-base font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/40 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
-                    >
-                      <FiShoppingCart />
-                      <span>Purchase</span>
-                    </button>
-                    {isOutOfStock && (
-                      <div className="flex items-center justify-center gap-2 rounded-2xl border border-rose-300/20 bg-rose-500/10 px-4 py-3 text-sm font-medium text-rose-100">
-                        <FiPackage />
-                        <span>Out of Stock</span>
+                return (
+                  <article
+                    key={vehicle._id}
+                    className="group overflow-hidden rounded-[1.75rem] border border-white/15 bg-white/10 p-6 shadow-2xl shadow-indigo-950/20 backdrop-blur-2xl transition-all duration-300 hover:-translate-y-1 hover:bg-white/15"
+                  >
+                    <div className="mb-5 flex items-start justify-between gap-4">
+                      <div>
+                        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-cyan-300">
+                          {vehicle.category}
+                        </p>
+                        <h2 className="mt-2 text-2xl font-semibold text-white">{vehicle.make}</h2>
+                        <p className="mt-1 text-lg text-slate-200">{vehicle.model}</p>
                       </div>
-                    )}
-                  </div>
-                </article>
-              );
+                      <div className="rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-cyan-900/30">
+                        {vehicle.price}
+                      </div>
+                    </div>
+
+                    <div className="grid gap-3 text-sm text-slate-100">
+                      <div className="rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3">
+                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                          Vehicle Summary
+                        </p>
+                        <p className="mt-2 leading-6 text-slate-200">
+                          Make, model, category, and price are highlighted above for quick scanning.
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-slate-950/30 px-4 py-3">
+                        <span className="font-medium text-slate-300">Stock</span>
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] ${
+                            isOutOfStock
+                              ? "bg-rose-500/20 text-rose-200"
+                              : "bg-emerald-500/20 text-emerald-200"
+                          }`}
+                        >
+                          {vehicle.quantity}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-6 space-y-3">
+                      <button
+                        type="button"
+                        disabled={isOutOfStock}
+                        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-500 via-indigo-500 to-cyan-400 px-5 py-3 text-base font-semibold text-white shadow-lg shadow-indigo-500/30 transition-all duration-300 hover:scale-[1.02] hover:shadow-indigo-500/40 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
+                      >
+                        <FiShoppingCart />
+                        <span>Purchase</span>
+                      </button>
+                      {isOutOfStock && (
+                        <div className="flex items-center justify-center gap-2 rounded-2xl border border-rose-300/20 bg-rose-500/10 px-4 py-3 text-sm font-medium text-rose-100">
+                          <FiPackage />
+                          <span>Out of Stock</span>
+                        </div>
+                      )}
+                    </div>
+                  </article>
+                );
               })}
             </div>
           </>
