@@ -19,6 +19,12 @@ const getVehicles = async (req, res) => {
   });
 };
 
+const searchVehicles = async (req, res) => {
+  const vehicles = await vehicleService.searchVehicles(req.query);
+
+  return res.status(200).json(vehicles);
+};
+
 const updateVehicle = async (req, res) => {
   const vehicle = await vehicleService.updateVehicle(req.params.id, req.body);
 
@@ -56,5 +62,6 @@ module.exports = {
   createVehicle,
   deleteVehicle,
   getVehicles,
+  searchVehicles,
   updateVehicle
 };

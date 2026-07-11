@@ -360,3 +360,54 @@ Authorization: Bearer <JWT_TOKEN>
 ```
 
 ---
+
+
+## Search Vehicles
+
+**Endpoint**
+
+`GET /api/vehicles/search`
+
+Requires JWT Authentication.
+
+### Search by Make
+
+```
+GET /api/vehicles/search?make=Toyota
+```
+
+### Search by Model
+
+```
+GET /api/vehicles/search?model=Fortuner
+```
+
+### Search by Category
+
+```
+GET /api/vehicles/search?category=SUV
+```
+
+### Search by Price
+
+```
+GET /api/vehicles/search?minPrice=1000000&maxPrice=5000000
+```
+
+### Success Response
+
+```json
+{
+  "success": true,
+  "vehicles": [
+    {
+      "_id": "...",
+      "make": "Toyota",
+      "model": "Fortuner",
+      "category": "SUV",
+      "price": 4500000,
+      "quantity": 5
+    }
+  ]
+}
+```

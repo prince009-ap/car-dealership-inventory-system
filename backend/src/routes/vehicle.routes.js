@@ -7,6 +7,7 @@ const router = express.Router();
 router.use(authMiddleware);
 
 router.post("/", vehicleController.createVehicle);
+router.get("/search", vehicleController.searchVehicles);
 router.get("/", vehicleController.getVehicles);
 router.put("/:id", vehicleController.updateVehicle);
 router.delete("/:id", vehicleController.deleteVehicle);
