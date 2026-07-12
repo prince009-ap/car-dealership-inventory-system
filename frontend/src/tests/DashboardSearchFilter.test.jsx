@@ -5,11 +5,22 @@ import { vi } from "vitest";
 import Dashboard from "../pages/Dashboard";
 import axios from "axios";
 
-vi.mock("axios", () => ({
-  default: {
-    get: vi.fn()
-  }
-}));
+vi.mock("axios", () => {
+  const mockAxios = {
+    get: vi.fn(),
+    post: vi.fn(),
+    create: vi.fn().mockReturnThis(),
+    interceptors: {
+      request: {
+        use: vi.fn()
+      }
+    }
+  };
+  return {
+    default: mockAxios,
+    ...mockAxios
+  };
+});
 
 const initialVehicles = [
   {

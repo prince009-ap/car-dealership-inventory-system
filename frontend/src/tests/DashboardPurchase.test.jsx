@@ -7,8 +7,8 @@ import axios from "axios";
 
 const requestInterceptor = vi.hoisted(() => ({ current: null }));
 
-vi.mock("axios", () => ({
-  default: {
+vi.mock("axios", () => {
+  const mockAxios = {
     get: vi.fn(),
     post: vi.fn((url, data, config = {}) => {
       const nextConfig = requestInterceptor.current
@@ -23,6 +23,7 @@ vi.mock("axios", () => ({
         }
       });
     }),
+    create: vi.fn().mockReturnThis(),
     interceptors: {
       request: {
         use: vi.fn((callback) => {
@@ -31,8 +32,12 @@ vi.mock("axios", () => ({
         })
       }
     }
-  }
-}));
+  };
+  return {
+    default: mockAxios,
+    ...mockAxios
+  };
+});
 
 const vehicles = [
   {

@@ -17,7 +17,8 @@ const emptyVehicleForm = {
   category: "",
   price: "",
   quantity: "",
-  image: ""
+  imageUrl: "",
+  imagePublicId: ""
 };
 
 const getStoredUser = () => {
@@ -116,11 +117,8 @@ const DEFAULT_IMAGES = {
 };
 
 const getVehicleImage = (vehicle) => {
-  if (vehicle?.image && vehicle.image.trim() !== "") {
-    if (vehicle.image.startsWith("/public/")) {
-      return `http://localhost:5000${vehicle.image}`;
-    }
-    return vehicle.image;
+  if (vehicle?.imageUrl && vehicle.imageUrl.trim() !== "") {
+    return vehicle.imageUrl;
   }
   const category = vehicle?.category || "Other";
   return DEFAULT_IMAGES[category] || DEFAULT_IMAGES.Other;
@@ -321,7 +319,8 @@ const Dashboard = () => {
         category: vehicle.category || "",
         price: vehicle.price ?? "",
         quantity: vehicle.quantity ?? "",
-        image: vehicle.image || ""
+        imageUrl: vehicle.imageUrl || "",
+        imagePublicId: vehicle.imagePublicId || ""
       });
       return;
     }
@@ -374,10 +373,12 @@ const Dashboard = () => {
         }
       });
       const url = response?.data?.url;
+      const publicId = response?.data?.publicId;
       if (url) {
         setVehicleForm((currentForm) => ({
           ...currentForm,
-          image: url
+          imageUrl: url,
+          imagePublicId: publicId || ""
         }));
       }
     } catch (error) {
@@ -430,8 +431,9 @@ const Dashboard = () => {
       price: Number(vehicleForm.price),
       quantity: Number(vehicleForm.quantity)
     };
-    if (vehicleForm.image && vehicleForm.image.trim() !== "") {
-      payload.image = vehicleForm.image.trim();
+    if (vehicleForm.imageUrl && vehicleForm.imageUrl.trim() !== "") {
+      payload.imageUrl = vehicleForm.imageUrl.trim();
+      payload.imagePublicId = vehicleForm.imagePublicId.trim();
     }
 
     try {
@@ -477,8 +479,9 @@ const Dashboard = () => {
       price: Number(vehicleForm.price),
       quantity: Number(vehicleForm.quantity)
     };
-    if (vehicleForm.image !== undefined) {
-      payload.image = vehicleForm.image.trim();
+    if (vehicleForm.imageUrl !== undefined) {
+      payload.imageUrl = vehicleForm.imageUrl.trim();
+      payload.imagePublicId = vehicleForm.imagePublicId ? vehicleForm.imagePublicId.trim() : "";
     }
 
     try {
@@ -1047,16 +1050,16 @@ const Dashboard = () => {
                     Vehicle Image
                   </label>
                   <div className="flex flex-col gap-3">
-                    {vehicleForm.image && (
+                    {vehicleForm.imageUrl && (
                       <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-slate-900/40">
                         <img
-                          src={vehicleForm.image.startsWith("/public/") ? `http://localhost:5000${vehicleForm.image}` : vehicleForm.image}
+                          src={vehicleForm.imageUrl}
                           alt="Preview"
                           className="h-full w-full object-cover"
                         />
                         <button
                           type="button"
-                          onClick={() => setVehicleForm(prev => ({ ...prev, image: "" }))}
+                          onClick={() => setVehicleForm(prev => ({ ...prev, imageUrl: "", imagePublicId: "" }))}
                           className="absolute right-2 top-2 rounded-lg bg-rose-500/80 px-2 py-1 text-xs font-semibold text-white backdrop-blur hover:bg-rose-500 transition-all duration-300"
                         >
                           Remove
@@ -1077,7 +1080,7 @@ const Dashboard = () => {
                       </div>
                     )}
                   </div>
-                  {formErrors.image && <p className="mt-2 text-sm text-rose-300">{formErrors.image}</p>}
+                  {formErrors.imageUrl && <p className="mt-2 text-sm text-rose-300">{formErrors.imageUrl}</p>}
                 </div>
               </div>
 

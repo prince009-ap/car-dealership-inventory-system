@@ -39,7 +39,12 @@ const vehicleSchema = new mongoose.Schema(
       min: [0, "Quantity cannot be negative"],
       default: 0
     },
-    image: {
+    imageUrl: {
+      type: String,
+      trim: true,
+      default: ""
+    },
+    imagePublicId: {
       type: String,
       trim: true,
       default: ""

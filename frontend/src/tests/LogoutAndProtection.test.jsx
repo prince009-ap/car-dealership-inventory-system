@@ -6,19 +6,24 @@ import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import App from "../App";
 
-vi.mock("axios", () => ({
-  default: {
+vi.mock("axios", () => {
+  const mockAxios = {
     get: vi.fn(),
     post: vi.fn(),
     put: vi.fn(),
     delete: vi.fn(),
+    create: vi.fn().mockReturnThis(),
     interceptors: {
       request: {
         use: vi.fn()
       }
     }
-  }
-}));
+  };
+  return {
+    default: mockAxios,
+    ...mockAxios
+  };
+});
 
 describe("Logout and Protected Routes", () => {
   beforeEach(() => {

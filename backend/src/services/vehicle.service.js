@@ -1,6 +1,13 @@
 const { randomUUID } = require("crypto");
 const mongoose = require("mongoose");
 const Vehicle = require("../models/Vehicle");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 const vehicleStore = new Map();
 const restockFixtures = new Map([
@@ -75,7 +82,8 @@ const toVehicleRecord = (vehicleData) => ({
   category: vehicleData.category,
   price: vehicleData.price,
   quantity: vehicleData.quantity,
-  image: vehicleData.image
+  imageUrl: vehicleData.imageUrl,
+  imagePublicId: vehicleData.imagePublicId
 });
 
 const createVehicle = async (vehicleData) => {
@@ -102,6 +110,20 @@ const getVehicles = async () => {
 
 const updateVehicle = async (vehicleId, updateData) => {
   if (isMongoConnected()) {
+    const existingVehicle = await Vehicle.findById(vehicleId);
+    if (existingVehicle) {
+      if (
+        updateData.imagePublicId !== undefined &&
+        existingVehicle.imagePublicId &&
+        updateData.imagePublicId !== existingVehicle.imagePublicId
+      ) {
+        try {
+          await cloudinary.uploader.destroy(existingVehicle.imagePublicId);
+        } catch (err) {
+          console.error("Cloudinary delete failed during update:", err);
+        }
+      }
+    }
     return Vehicle.findByIdAndUpdate(vehicleId, updateData, {
       new: true,
       runValidators: true
@@ -120,6 +142,18 @@ const updateVehicle = async (vehicleId, updateData) => {
     return vehicle;
   }
 
+  if (
+    updateData.imagePublicId !== undefined &&
+    existingVehicle.imagePublicId &&
+    updateData.imagePublicId !== existingVehicle.imagePublicId
+  ) {
+    try {
+      await cloudinary.uploader.destroy(existingVehicle.imagePublicId);
+    } catch (err) {
+      console.error("Cloudinary delete failed during update:", err);
+    }
+  }
+
   const updatedVehicle = {
     ...existingVehicle,
     ...updateData,
@@ -132,6 +166,14 @@ const updateVehicle = async (vehicleId, updateData) => {
 
 const deleteVehicle = async (vehicleId) => {
   if (isMongoConnected()) {
+    const vehicle = await Vehicle.findById(vehicleId);
+    if (vehicle && vehicle.imagePublicId) {
+      try {
+        await cloudinary.uploader.destroy(vehicle.imagePublicId);
+      } catch (err) {
+        console.error("Cloudinary delete failed during deletion:", err);
+      }
+    }
     return Vehicle.findByIdAndDelete(vehicleId);
   }
 
@@ -141,6 +183,14 @@ const deleteVehicle = async (vehicleId) => {
     return {
       _id: vehicleId
     };
+  }
+
+  if (existingVehicle.imagePublicId) {
+    try {
+      await cloudinary.uploader.destroy(existingVehicle.imagePublicId);
+    } catch (err) {
+      console.error("Cloudinary delete failed during deletion:", err);
+    }
   }
 
   vehicleStore.delete(vehicleId);

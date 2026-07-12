@@ -106,12 +106,11 @@ const uploadImage = async (req, res) => {
     });
   }
 
-  const filePath = `/public/uploads/${req.file.filename}`;
-
   return res.status(200).json({
     success: true,
     message: "Image uploaded successfully",
-    url: filePath
+    url: req.file.path,
+    publicId: req.file.filename
   });
 };
 

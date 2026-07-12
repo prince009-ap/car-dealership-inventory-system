@@ -4,11 +4,22 @@ import { vi } from "vitest";
 import LoginPage from "../pages/LoginPage";
 import axios from "axios";
 
-vi.mock("axios", () => ({
-  default: {
-    post: vi.fn()
-  }
-}));
+vi.mock("axios", () => {
+  const mockAxios = {
+    post: vi.fn(),
+    get: vi.fn(),
+    create: vi.fn().mockReturnThis(),
+    interceptors: {
+      request: {
+        use: vi.fn()
+      }
+    }
+  };
+  return {
+    default: mockAxios,
+    ...mockAxios
+  };
+});
 
 describe("LoginPage", () => {
   it("renders the login page", () => {
