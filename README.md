@@ -15,7 +15,7 @@ A full-stack Smart Car Dealership Inventory System (CarHub) built with the MERN 
 
 ## 🧪 Testing
 
--all TDD test cases RED and GREEN both part in image that are in docs/documents
+-all TDD test cases RED and GREEN both part in image that are in docs/screenshot
 
 ## 📸 Screenshots
 
