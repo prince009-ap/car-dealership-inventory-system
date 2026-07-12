@@ -1,5 +1,11 @@
 # CarHub
 
+A modern Full Stack Car Dealership Inventory Management System built using React, Node.js, Express, MongoDB Atlas, Cloudinary, JWT Authentication, Vercel, and Render.
+
+🌐 Live Demo: https://car-dealership-inventory-system-chi.vercel.app/
+
+# CarHub
+
 A full-stack Smart Car Dealership Inventory System (CarHub) built with the MERN stack, featuring JWT authentication, role-based access control, vehicle inventory management, search and filtering, purchase/restock functionality, and Test-Driven Development (TDD).
 
 ## Project Structure
