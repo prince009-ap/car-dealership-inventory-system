@@ -1,26 +1,17 @@
 import axios from "axios";
 
-if (!axios.defaults) {
-  axios.defaults = {};
-}
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+});
 
-axios.defaults.baseURL = "http://localhost:5000/api";
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
 
-if (axios.interceptors?.request?.use) {
-  axios.interceptors.request.use((config) => {
-    const nextConfig = { ...config };
-    const token =
-      typeof window !== "undefined" ? window.localStorage.getItem("token") : null;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
 
-    if (token) {
-      nextConfig.headers = {
-        ...(config.headers || {}),
-        Authorization: `Bearer ${token}`
-      };
-    }
+  return config;
+});
 
-    return nextConfig;
-  });
-}
-
-export default axios;
+export default api;
