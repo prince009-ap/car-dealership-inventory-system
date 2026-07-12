@@ -66,11 +66,11 @@ const LoginForm = () => {
           <div className="mb-8 space-y-4">
             <div className="inline-flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 text-lg font-bold text-white shadow-lg shadow-indigo-500/30">
-                A
+                C
               </div>
               <div>
                 <p className="text-sm font-medium uppercase tracking-[0.24em] text-cyan-300">
-                  AI Car
+                  CarHub
                 </p>
                 <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
                   Welcome Back

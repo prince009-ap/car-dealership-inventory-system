@@ -622,11 +622,11 @@ const Dashboard = () => {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-500 to-cyan-400 text-lg font-bold shadow-lg shadow-indigo-500/30">
-              A
+              C
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.26em] text-cyan-300">
-                AI Car
+                CarHub
               </p>
               <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
             </div>
