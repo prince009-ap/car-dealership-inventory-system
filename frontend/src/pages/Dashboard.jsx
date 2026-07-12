@@ -506,7 +506,8 @@ const Dashboard = () => {
         formData,
         {
           headers: {
-            ...config.headers
+            ...config.headers,
+            "Content-Type": "multipart/form-data"
           }
         }
       );

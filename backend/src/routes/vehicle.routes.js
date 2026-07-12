@@ -15,11 +15,16 @@ cloudinary.config({
 
 // Configure Storage
 const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "carhub_vehicles",
-    allowed_formats: ["jpg", "jpeg", "png", "webp"]
-  }
+    cloudinary,
+    params: async (req,file)=>({
+
+        folder:"carhub_vehicles",
+
+        resource_type:"image",
+
+        allowed_formats:["jpg","jpeg","png","webp"]
+
+    })
 });
 
 // Configure Multer
@@ -39,19 +44,24 @@ const upload = multer({
 });
 
 const handleUpload = (req, res, next) => {
-  console.log("handleUpload - Upload request details:");
-  console.log("handleUpload - headers:", req.headers);
   upload.single("image")(req, res, (err) => {
     if (err) {
-      console.error("handleUpload - Multer upload failure:", err);
+
+      console.log("===========UPLOAD ERROR===========");
+      console.log(err);
+      console.log(err.message);
+      console.log(err.stack);
+
       return res.status(400).json({
-        success: false,
-        message: err.message || "Image upload failed"
+        success:false,
+        errorType:err.name,
+        message:err.message,
+        fullError:String(err)
       });
     }
-    console.log("handleUpload - Multer upload success.");
-    console.log("handleUpload - req.body parsed:", req.body);
-    console.log("handleUpload - req.file metadata:", req.file);
+
+    console.log(req.file);
+
     next();
   });
 };
@@ -66,7 +76,12 @@ router.post("/:id/purchase", vehicleController.purchaseVehicle);
 router.post("/:id/restock", authorizeRoles("ADMIN"), vehicleController.restockVehicle);
 router.get("/search", vehicleController.searchVehicles);
 router.get("/", vehicleController.getVehicles);
-router.put("/:id", handleUpload, vehicleController.updateVehicle);
+router.put(
+    "/:id",
+    authorizeRoles("ADMIN"),
+    handleUpload,
+    vehicleController.updateVehicle
+);
 router.delete("/:id", authorizeRoles("ADMIN"), vehicleController.deleteVehicle);
 
 module.exports = router;
