@@ -28,6 +28,9 @@ jest.mock("multer-storage-cloudinary", () => {
           if (file.originalname.endsWith(".pdf")) {
             return cb(new Error("Error: File upload only supports images (jpg, jpeg, png, webp)"));
           }
+          if (file.originalname === "fail_upload.png") {
+            return cb(new Error("Cloudinary upload failed"));
+          }
           const baseName = file.originalname.split(".")[0];
           cb(null, {
             path: `https://res.cloudinary.com/dummy/image/upload/v12345/carhub_vehicles/${baseName}.png`,
@@ -151,6 +154,50 @@ describe("Vehicle Image Upload and Integration Tests", () => {
       expect(response.body.vehicle.imageUrl).toBe("https://res.cloudinary.com/dummy/image/upload/v12345/carhub_vehicles/new_car.png");
       expect(response.body.vehicle.imagePublicId).toBe("carhub_vehicles/new_car");
       expect(cloudinary.uploader.destroy).toHaveBeenCalledWith("carhub_vehicles/fake_id");
+    });
+
+    it("should update vehicle details without changing the image via PUT request", async () => {
+      const response = await request(app)
+        .put(`/api/vehicles/${vehicleId}`)
+        .set("Authorization", adminHeader)
+        .send({
+          price: 98000,
+          quantity: 4
+        });
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.vehicle.price).toBe(98000);
+      expect(response.body.vehicle.quantity).toBe(4);
+      expect(response.body.vehicle.imageUrl).toBe("https://res.cloudinary.com/dummy/image/upload/fake_id.png");
+      expect(response.body.vehicle.imagePublicId).toBe("carhub_vehicles/fake_id");
+      expect(cloudinary.uploader.destroy).not.toHaveBeenCalled();
+    });
+
+    it("should fail validation and return 400 when updating with an invalid image format", async () => {
+      const response = await request(app)
+        .put(`/api/vehicles/${vehicleId}`)
+        .set("Authorization", adminHeader)
+        .attach("image", Buffer.from("dummy pdf content"), "invalid_format.pdf")
+        .field("price", 95000);
+
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toContain("only supports images");
+      expect(cloudinary.uploader.destroy).not.toHaveBeenCalled();
+    });
+
+    it("should return 400 and fail when storage upload fails during update", async () => {
+      const response = await request(app)
+        .put(`/api/vehicles/${vehicleId}`)
+        .set("Authorization", adminHeader)
+        .attach("image", Buffer.from("dummy content"), "fail_upload.png")
+        .field("price", 95000);
+
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+      expect(response.body.message).toBe("Cloudinary upload failed");
+      expect(cloudinary.uploader.destroy).not.toHaveBeenCalled();
     });
 
     it("should destroy the image on Cloudinary when deleting the vehicle", async () => {

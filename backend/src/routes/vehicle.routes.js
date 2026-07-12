@@ -39,13 +39,19 @@ const upload = multer({
 });
 
 const handleUpload = (req, res, next) => {
+  console.log("handleUpload - Upload request details:");
+  console.log("handleUpload - headers:", req.headers);
   upload.single("image")(req, res, (err) => {
     if (err) {
+      console.error("handleUpload - Multer upload failure:", err);
       return res.status(400).json({
         success: false,
         message: err.message || "Image upload failed"
       });
     }
+    console.log("handleUpload - Multer upload success.");
+    console.log("handleUpload - req.body parsed:", req.body);
+    console.log("handleUpload - req.file metadata:", req.file);
     next();
   });
 };

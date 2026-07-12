@@ -384,11 +384,7 @@ const Dashboard = () => {
     formData.append("image", file);
 
     try {
-      const response = await api.post("/vehicles/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      });
+      const response = await api.post("/vehicles/upload", formData);
       const url = response?.data?.url;
       const publicId = response?.data?.publicId;
       if (url) {
@@ -510,8 +506,7 @@ const Dashboard = () => {
         formData,
         {
           headers: {
-            ...config.headers,
-            "Content-Type": "multipart/form-data"
+            ...config.headers
           }
         }
       );
