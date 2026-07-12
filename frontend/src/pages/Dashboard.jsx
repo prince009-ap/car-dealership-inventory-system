@@ -118,7 +118,11 @@ const DEFAULT_IMAGES = {
 
 const getVehicleImage = (vehicle) => {
   if (vehicle?.imageUrl && vehicle.imageUrl.trim() !== "") {
-    return vehicle.imageUrl;
+    if (vehicle.imageUrl.startsWith("blob:") || vehicle.imageUrl.startsWith("data:")) {
+      return vehicle.imageUrl;
+    }
+    const ts = vehicle.updatedAt ? new Date(vehicle.updatedAt).getTime() : Date.now();
+    return `${vehicle.imageUrl}?t=${ts}`;
   }
   const category = vehicle?.category || "Other";
   return DEFAULT_IMAGES[category] || DEFAULT_IMAGES.Other;
@@ -211,6 +215,7 @@ const Dashboard = () => {
   const [actionMessage, setActionMessage] = useState("");
   const [actionError, setActionError] = useState("");
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [filters, setFilters] = useState(initialFilters);
   const currentRequestRef = useRef({ path: "/vehicles", params: {} });
   const isAdmin = currentUser?.role === "ADMIN";
@@ -340,6 +345,7 @@ const Dashboard = () => {
     setModalType("");
     setSelectedVehicle(null);
     setVehicleForm(emptyVehicleForm);
+    setSelectedImageFile(null);
     setFormErrors({});
     setActionError("");
     setActionLoading(false);
@@ -357,6 +363,17 @@ const Dashboard = () => {
   const handleImageFileChange = async (event) => {
     const file = event.target.files?.[0];
     if (!file) {
+      return;
+    }
+
+    if (modalType === "edit") {
+      setSelectedImageFile(file);
+      const previewUrl = URL.createObjectURL(file);
+      setVehicleForm((currentForm) => ({
+        ...currentForm,
+        imageUrl: previewUrl,
+        imagePublicId: ""
+      }));
       return;
     }
 
@@ -472,29 +489,42 @@ const Dashboard = () => {
     setActionMessage("");
     setActionLoading(true);
 
-    const payload = {
-      make: vehicleForm.make.trim(),
-      model: vehicleForm.model.trim(),
-      category: vehicleForm.category.trim(),
-      price: Number(vehicleForm.price),
-      quantity: Number(vehicleForm.quantity)
-    };
-    if (vehicleForm.imageUrl !== undefined) {
-      payload.imageUrl = vehicleForm.imageUrl.trim();
-      payload.imagePublicId = vehicleForm.imagePublicId ? vehicleForm.imagePublicId.trim() : "";
+    const formData = new FormData();
+    formData.append("make", vehicleForm.make.trim());
+    formData.append("model", vehicleForm.model.trim());
+    formData.append("category", vehicleForm.category.trim());
+    formData.append("price", Number(vehicleForm.price));
+    formData.append("quantity", Number(vehicleForm.quantity));
+
+    if (selectedImageFile) {
+      formData.append("image", selectedImageFile);
+    } else {
+      formData.append("imageUrl", vehicleForm.imageUrl ? vehicleForm.imageUrl.trim() : "");
+      formData.append("imagePublicId", vehicleForm.imagePublicId ? vehicleForm.imagePublicId.trim() : "");
     }
 
     try {
+      const config = getAuthConfig();
       const response = await api.put(
         `/vehicles/${selectedVehicle._id}`,
-        payload,
-        getAuthConfig()
+        formData,
+        {
+          headers: {
+            ...config.headers,
+            "Content-Type": "multipart/form-data"
+          }
+        }
       );
-      const updatedVehicle =
-        response?.data?.vehicle || {
-          ...selectedVehicle,
-          ...payload
-        };
+      const updatedVehicle = response?.data?.vehicle || {
+        ...selectedVehicle,
+        make: vehicleForm.make.trim(),
+        model: vehicleForm.model.trim(),
+        category: vehicleForm.category.trim(),
+        price: Number(vehicleForm.price),
+        quantity: Number(vehicleForm.quantity),
+        imageUrl: vehicleForm.imageUrl ? vehicleForm.imageUrl.trim() : "",
+        imagePublicId: vehicleForm.imagePublicId ? vehicleForm.imagePublicId.trim() : ""
+      };
 
       setVehicles((currentVehicles) =>
         currentVehicles.map((vehicle) =>

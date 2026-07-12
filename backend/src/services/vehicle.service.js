@@ -109,6 +109,13 @@ const getVehicles = async () => {
 };
 
 const updateVehicle = async (vehicleId, updateData) => {
+  if (updateData.price !== undefined && updateData.price !== "") {
+    updateData.price = Number(updateData.price);
+  }
+  if (updateData.quantity !== undefined && updateData.quantity !== "") {
+    updateData.quantity = Number(updateData.quantity);
+  }
+
   if (isMongoConnected()) {
     const existingVehicle = await Vehicle.findById(vehicleId);
     if (existingVehicle) {

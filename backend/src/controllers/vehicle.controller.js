@@ -66,7 +66,12 @@ const restockVehicle = async (req, res) => {
 };
 
 const updateVehicle = async (req, res) => {
-  const vehicle = await vehicleService.updateVehicle(req.params.id, req.body);
+  const updateData = { ...req.body };
+  if (req.file) {
+    updateData.imageUrl = req.file.path;
+    updateData.imagePublicId = req.file.filename;
+  }
+  const vehicle = await vehicleService.updateVehicle(req.params.id, updateData);
 
   if (!vehicle) {
     return res.status(404).json({

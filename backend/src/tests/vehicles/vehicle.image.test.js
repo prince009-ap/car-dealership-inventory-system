@@ -28,9 +28,10 @@ jest.mock("multer-storage-cloudinary", () => {
           if (file.originalname.endsWith(".pdf")) {
             return cb(new Error("Error: File upload only supports images (jpg, jpeg, png, webp)"));
           }
+          const baseName = file.originalname.split(".")[0];
           cb(null, {
-            path: "https://res.cloudinary.com/dummy/image/upload/v12345/carhub_vehicles/fake_id.png",
-            filename: "carhub_vehicles/fake_id"
+            path: `https://res.cloudinary.com/dummy/image/upload/v12345/carhub_vehicles/${baseName}.png`,
+            filename: `carhub_vehicles/${baseName}`
           });
         },
         _removeFile: (req, file, cb) => {
@@ -70,8 +71,8 @@ describe("Vehicle Image Upload and Integration Tests", () => {
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
-      expect(response.body.url).toBe("https://res.cloudinary.com/dummy/image/upload/v12345/carhub_vehicles/fake_id.png");
-      expect(response.body.publicId).toBe("carhub_vehicles/fake_id");
+      expect(response.body.url).toBe("https://res.cloudinary.com/dummy/image/upload/v12345/carhub_vehicles/test_car.png");
+      expect(response.body.publicId).toBe("carhub_vehicles/test_car");
     });
 
     it("should fail validation if file format is unsupported", async () => {
@@ -132,6 +133,24 @@ describe("Vehicle Image Upload and Integration Tests", () => {
       });
 
       expect(cloudinary.uploader.destroy).not.toHaveBeenCalled();
+    });
+
+    it("should update a vehicle's image via PUT request with multipart/form-data", async () => {
+      const response = await request(app)
+        .put(`/api/vehicles/${vehicleId}`)
+        .set("Authorization", adminHeader)
+        .attach("image", Buffer.from("new dummy content"), "new_car.png")
+        .field("make", "Tesla")
+        .field("model", "Model S")
+        .field("category", "Electric")
+        .field("price", 95000)
+        .field("quantity", 3);
+
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.vehicle.imageUrl).toBe("https://res.cloudinary.com/dummy/image/upload/v12345/carhub_vehicles/new_car.png");
+      expect(response.body.vehicle.imagePublicId).toBe("carhub_vehicles/new_car");
+      expect(cloudinary.uploader.destroy).toHaveBeenCalledWith("carhub_vehicles/fake_id");
     });
 
     it("should destroy the image on Cloudinary when deleting the vehicle", async () => {
