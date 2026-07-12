@@ -142,7 +142,7 @@ Registration and Login APIs were developed following the Red → Green → Refac
 {
   "name": "Prince",
   "email": "senjaliyaprince009@gmail.com",
-  "password": "123456"
+  "password": "**********"
 }
 ```
 
@@ -195,7 +195,7 @@ Registration and Login APIs were developed following the Red → Green → Refac
 ```json
 {
   "email": "senjaliyaprince009@gmail.com",
-  "password": "123456"
+  "password": "*********"
 }
 ```
 
@@ -551,25 +551,4 @@ Requires JWT Authentication.
 }
 ```
 
-## ☁️ Cloudinary Image Upload Setup
-
-To configure production-ready image storage, add the following credentials to your `.env` file in the `backend/` directory:
-
-```env
-CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-CLOUDINARY_API_KEY=your_cloudinary_api_key
-CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-```
-
-### Image Upload Flow
-1. **Selection:** The administrator selects an image file inside the "Add/Edit Vehicle" modal.
-2. **Pre-Upload:** The frontend uploads the image via `POST /api/vehicles/upload` as multipart form data.
-3. **Cloudinary Pipeline:**
-   - The backend validates the file type (`jpg`, `jpeg`, `png`, `webp`) and size (maximum 5 MB).
-   - The file is uploaded directly to the `carhub_vehicles` folder on Cloudinary via `multer-storage-cloudinary`.
-   - The API returns a JSON response containing the secure `url` and `publicId`.
-4. **Creation/Update:** The metadata is saved directly in the MongoDB document (`imageUrl` and `imagePublicId`).
-5. **Lifecycle Actions:**
-   - **Update:** If a vehicle's image is updated, the previous image is deleted from Cloudinary using its `publicId`.
-   - **Delete:** When a vehicle is deleted, the corresponding Cloudinary image is destroyed before the MongoDB document is removed.
 
